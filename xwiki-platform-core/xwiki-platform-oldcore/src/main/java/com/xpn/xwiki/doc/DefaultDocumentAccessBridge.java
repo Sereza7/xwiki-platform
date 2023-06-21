@@ -179,13 +179,15 @@ public class DefaultDocumentAccessBridge implements DocumentAccessBridge
     @Override
     public DocumentReference getCurrentDocumentReference()
     {
-        XWikiDocument currentDocument = null;
-        XWikiContext context = getContext();
-        if (context != null) {
-            currentDocument = context.getDoc();
-        }
-
+        DocumentModelBridge currentDocument = getCurrentDocument();
         return currentDocument == null ? null : currentDocument.getDocumentReference();
+    }
+
+    @Override
+    public DocumentModelBridge getCurrentDocument()
+    {
+        XWikiContext xcontext = getContext();
+        return xcontext != null ? xcontext.getDoc() : null;
     }
 
     @Override
@@ -624,6 +626,17 @@ public class DefaultDocumentAccessBridge implements DocumentAccessBridge
     }
 
     @Override
+    public void setAttachmentContent(AttachmentReference attachmentReference, InputStream attachmentData)
+        throws Exception
+    {
+        XWikiContext xcontext = getContext();
+        XWikiDocument doc = xcontext.getWiki().getDocument(attachmentReference.getDocumentReference(), xcontext);
+
+        setAttachmentContent(doc, attachmentReference.getName(), attachmentData, xcontext);
+    }
+
+
+    @Override
     @Deprecated
     public void setAttachmentContent(String documentReference, String attachmentFilename, byte[] attachmentData)
         throws Exception
@@ -637,14 +650,20 @@ public class DefaultDocumentAccessBridge implements DocumentAccessBridge
     private void setAttachmentContent(XWikiDocument doc, String attachmentFilename, byte[] attachmentData,
         XWikiContext xcontext) throws Exception
     {
+        setAttachmentContent(doc, attachmentFilename,
+            new ByteArrayInputStream(attachmentData != null ? attachmentData : new byte[0]), xcontext);
+    }
+
+    private void setAttachmentContent(XWikiDocument doc, String attachmentFilename, InputStream attachmentData,
+        XWikiContext xcontext) throws Exception
+    {
         if (doc.getAttachment(attachmentFilename) == null) {
             doc.setComment("Add new attachment " + attachmentFilename);
         } else {
             doc.setComment("Update attachment " + attachmentFilename);
         }
 
-        doc.setAttachment(attachmentFilename,
-            new ByteArrayInputStream(attachmentData != null ? attachmentData : new byte[0]), xcontext);
+        doc.setAttachment(attachmentFilename, attachmentData, xcontext);
 
         doc.setAuthorReference(getCurrentUserReference());
         if (doc.isNew()) {

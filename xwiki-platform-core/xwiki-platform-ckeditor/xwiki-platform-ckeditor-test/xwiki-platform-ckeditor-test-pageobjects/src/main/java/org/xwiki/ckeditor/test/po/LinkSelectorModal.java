@@ -47,12 +47,53 @@ public class LinkSelectorModal extends BaseElement
      */
     public LinkSelectorModal setResourceValue(String value)
     {
+        return setResourceValue(value, true);
+    }
+    
+    /**
+     * Set the given value on the resource value search field.
+     *
+     * @param value the value to use to search for a resource (i.e., page or attachment)
+     * @param wait when {@code true}, wait for the dropdown to be shown before continuing
+     * @return the current page object
+     * @since 15.4RC1
+     * @since 14.10.10
+     */
+    public LinkSelectorModal setResourceValue(String value, boolean wait)
+    {
         WebElement resourcePicker = getResourcePicker();
         WebElement element = resourcePicker.findElement(cssSelector(" input.resourceReference"));
         element.clear();
         element.sendKeys(value);
-        getDriver().waitUntilElementsAreVisible(resourcePicker, new By[] { DROPDOWN_ITEM_SELECTOR }, true);
+        if (wait) {
+            getDriver().waitUntilElementsAreVisible(resourcePicker, new By[] { DROPDOWN_ITEM_SELECTOR }, true);
+        }
         return this;
+    }
+
+    /**
+     * @return the resource type currently selected in the resource picker (e.g., {@code "doc"})
+     * @since 14.10.13
+     * @since 15.5RC1
+     */
+    public String getSelectedResourceType()
+    {
+        return getResourceDisplay().getAttribute("data-resourcetype");
+    }
+
+    /**
+     * @return the resource reference currently selected in the resource picker (e.g., {@code "Sandbox.WebHome"})
+     * @since 14.10.13
+     * @since 15.5RC1
+     */
+    public String getSelectedResourceReference()
+    {
+        return getResourceDisplay().getAttribute("data-resourcereference");
+    }
+
+    private WebElement getResourceDisplay()
+    {
+        return getResourcePicker().findElement(cssSelector(".resourceDisplay"));
     }
 
     /**
@@ -82,6 +123,16 @@ public class LinkSelectorModal extends BaseElement
     public void clickOK()
     {
         getCKEditorDialog().findElement(By.cssSelector(".cke_dialog_ui_button_ok")).click();
+    }
+
+    /**
+     * Click on the {@code "Cancel"} button of the modal.
+     * @since 14.10.13
+     * @since 15.5RC1
+     */
+    public void clickCancel()
+    {
+        getCKEditorDialog().findElement(By.cssSelector(".cke_dialog_ui_button_cancel")).click();
     }
 
     /**

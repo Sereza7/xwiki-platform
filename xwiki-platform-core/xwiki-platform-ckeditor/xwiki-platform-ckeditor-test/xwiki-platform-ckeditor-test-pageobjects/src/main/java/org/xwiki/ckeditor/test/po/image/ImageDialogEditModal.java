@@ -19,14 +19,11 @@
  */
 package org.xwiki.ckeditor.test.po.image;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.xwiki.ckeditor.test.po.image.edit.ImageDialogAdvancedEditForm;
+import org.xwiki.ckeditor.test.po.image.edit.ImageDialogStandardEditForm;
 import org.xwiki.test.ui.po.BaseElement;
-import org.xwiki.test.ui.po.SuggestInputElement;
-import org.xwiki.test.ui.po.SuggestInputElement.SuggestionElement;
 
 /**
  * Page Object for the image edition/configuration modal.
@@ -44,6 +41,7 @@ public class ImageDialogEditModal extends BaseElement
     public ImageDialogEditModal waitUntilReady()
     {
         getDriver().waitUntilElementIsVisible(By.className("image-editor-modal"));
+        getDriver().waitUntilElementDisappears(By.cssSelector(".image-editor-modal .loading"));
         return this;
     }
 
@@ -52,9 +50,25 @@ public class ImageDialogEditModal extends BaseElement
      */
     public void clickInsert()
     {
+        By buttonSelector = By.cssSelector(".image-editor-modal .btn-primary");
+        clickCloseButton(buttonSelector);
+    }
+
+    /**
+     * Click on the cancel button to close the modal.
+     * @since 14.10.13
+     * @since 15.5RC1
+     */
+    public void clickCancel()
+    {
+        By buttonSelector = By.cssSelector(".image-editor-modal [data-dismiss='modal']");
+        clickCloseButton(buttonSelector);
+    }
+
+    private void clickCloseButton(By buttonSelector)
+    {
         // Wait for the button to be enabled before clicking.
         // Wait for the button to be hidden before continuing.
-        By buttonSelector = By.cssSelector(".image-editor-modal .btn-primary");
         WebElement buttonElement = getDriver().findElement(buttonSelector);
         getDriver().waitUntilElementIsEnabled(buttonElement);
         buttonElement.click();
@@ -62,56 +76,24 @@ public class ImageDialogEditModal extends BaseElement
     }
 
     /**
-     * Click on the caption checkbox field.
+     * @return the standard edit tab page object
+     * @since 15.2
+     * @since 14.10.8
      */
-    public void clickCaptionCheckbox()
+    public ImageDialogStandardEditForm switchToStandardTab()
     {
-        getDriver().findElement(By.id("imageCaptionActivation")).click();
+        getDriver().findElement(By.cssSelector(".image-editor-modal .image-editor a[href='#standard']")).click();
+        return new ImageDialogStandardEditForm();
     }
 
     /**
-     * @return the list of image styles values proposed in the image styles field
-     * @since 14.8RC1
+     * @return the advanded edit tab page object
+     * @since 15.2
+     * @since 14.10.8
      */
-    public Set<String> getListImageStyles()
+    public ImageDialogAdvancedEditForm switchToAdvancedTab()
     {
-        return getImageStylesElement()
-            .getSuggestions()
-            .stream()
-            .map(SuggestionElement::getValue)
-            .collect(Collectors.toSet());
-    }
-
-    /**
-     * @return the currently selected value of the image styles field
-     * @since 14.8RC1
-     */
-    public String getCurrentImageStyle()
-    {
-        return getImageStylesElement()
-            .getSelectedSuggestions()
-            .stream()
-            .findFirst()
-            .map(SuggestionElement::getValue)
-            .orElseThrow(() -> new RuntimeException("Unexpected empty suggestions list."));
-    }
-
-    /**
-     * @param value the user visible value of the field to select
-     * @return the current page object
-     * @since 14.8RC1
-     */
-    public ImageDialogEditModal setImageStyle(String value)
-    {
-        getImageStylesElement().selectByVisibleText(value);
-        return this;
-    }
-
-    private SuggestInputElement getImageStylesElement()
-    {
-        WebElement element = getDriver().findElement(By.id("imageStyles"));
-        SuggestInputElement suggestInputElement = new SuggestInputElement(element);
-        suggestInputElement.click().waitForSuggestions();
-        return suggestInputElement;
+        getDriver().findElement(By.cssSelector(".image-editor-modal .image-editor a[href='#advanced']")).click();
+        return new ImageDialogAdvancedEditForm();
     }
 }
