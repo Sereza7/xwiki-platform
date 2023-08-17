@@ -184,16 +184,6 @@
 #end
 
 ###
-### Action menu separator
-###
-#macro(xwikiactionmenuseparator)
-    </ul>
-  </dd>
-  <dd>
-    <ul>
-#end
-
-###
 ###    Toplevel Menu entry end
 ###
 ### End the subitem section
