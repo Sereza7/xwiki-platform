@@ -212,6 +212,7 @@
     ## FIXME: The tree navigation should take into account the current hierarchy mode.
     ## FIXME: Make sure the tree shows entities of type $root.type and $openTo.type
     #set ($treeParams = {
+      'id': $rootId,
       'class': 'breadcrumb-tree',
       'limit': 10,
       'links': true,

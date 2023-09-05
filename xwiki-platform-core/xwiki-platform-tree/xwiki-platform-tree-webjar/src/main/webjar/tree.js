@@ -189,6 +189,7 @@ define([
         // Create the node only if it doesn't exist (the node may have been loaded by a call to openTo).
         // Note that deleting or moving the existing node may not be allowed by #validateOperation().
         if (!tree.get_node(this)) {
+          this.setAttribute('id',tree._id+this.getAttribute('id'));
           tree.create_node(parent, this, position + index, index === 0 && function(firstChild) {
             // Focus the first node in order to resume the keyboard navigation. We don't select the node because the
             // tree can be used as a picker and we don't want to modify the selection when performing the pagination.
