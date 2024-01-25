@@ -662,12 +662,6 @@ Object.extend(XWiki, {
     element.toggleClassName("collapsed");
   },
 
-  registerPanelToggle: function(container) {
-    $(container || 'body').select('.panel .xwikipaneltitle').each(function(item) {
-      item.observe('click', this.togglePanelVisibility.bind(this, item.up('.panel')));
-    }.bind(this));
-  },
-
   /**
    * Extracts the file name from the value of the specified file input.
    */
@@ -739,7 +733,6 @@ Object.extend(XWiki, {
     this.insertSectionEditLinks(container);
     this.insertCreatePageFromTemplateModalBoxes(container);
     this.watchlist.initialize(container);
-    this.registerPanelToggle(container);
   }
 });
 

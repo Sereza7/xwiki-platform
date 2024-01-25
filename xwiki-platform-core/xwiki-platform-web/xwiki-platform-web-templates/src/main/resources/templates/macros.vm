@@ -832,14 +832,16 @@ $fn
 <div role="#if ($isNavigation)navigation#{else}complementary#{end}" class="#if ($isLarge)large #{end}panel
 expanded $!specialClassAttribute $!deprecatedClassAttribute"
 aria-label="$escapetool.xml($title)">
-<h2 class="xwikipaneltitle#if ($isHeaderHidden) hidden#end">$title</h2>
+  <div class="panelheader#if ($isHeaderHidden) hidden#end"><h2 class="xwikipaneltitle">$title</h2><button class="xwiki-panel-collapse-toggle coucou btn btn-default btn-xs">$services.icon.renderHTML('caret-down')</button></div>
 <div class="xwikipanelcontents">
 #else
 (% role="#if ($isNavigation)navigation#{else}complementary#{end}" class="#if ($isLarge)large#{end}panel
 expanded $!specialClassAttribute $!deprecatedClassAttribute"
 aria-label="$escapetool.xml($title)"
 %)(((
-{{html}}<h2 class="xwikipaneltitle#if ($isHeaderHidden) hidden#end">$title</h2>{{/html}}
+
+{{html}}<div class="panelheader#if ($isHeaderHidden) hidden#end"><h2 class="xwikipaneltitle">$title</h2><button class="xwiki-panel-collapse-toggle btn btn-default btn-xs">$services.icon.renderHTML('caret-down')</button></div>{{/html}}
+
 (% class="xwikipanelcontents" %)(((
 #end
 #end

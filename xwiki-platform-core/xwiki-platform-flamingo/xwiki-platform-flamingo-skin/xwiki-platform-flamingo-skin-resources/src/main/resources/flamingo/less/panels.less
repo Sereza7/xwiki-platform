@@ -7,15 +7,24 @@
   box-shadow: none;
 }
 
-h1.xwikipaneltitle, h2.xwikipaneltitle {
-  .panel-title;
+.panelheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
   margin: @padding-small-vertical @padding-large-horizontal @padding-large-vertical;
   padding: 0 0 @padding-large-vertical;
-  color: @panel-header-text;
-  border-bottom: @border-width solid @xwiki-page-content-bg;
   box-shadow: 0 @border-width 0 @xwiki-border-color;
+  border-bottom: @border-width solid @xwiki-page-content-bg;
+}
+
+h1.xwikipaneltitle, h2.xwikipaneltitle {
+  .panel-title;
+
+  color: @panel-header-text;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex-grow: 1;
 }
 
 .xwikipanelcontents {
