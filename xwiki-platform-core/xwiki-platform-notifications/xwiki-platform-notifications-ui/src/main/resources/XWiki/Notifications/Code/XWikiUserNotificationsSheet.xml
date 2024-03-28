@@ -310,17 +310,6 @@
       )))
       #end
       ######################################################
-      ### AUTOWATCH PREFERENCES
-      ######################################################
-      #if ($services.notification.watch.isEnabled())
-      (% class="profile-section highlighted-profile-section notification-top-panel column half" %)
-      (((
-      (% id="Hnotifications.settings.watch.title" %)
-      === {{translation key="notifications.settings.watch.title" /}} ===
-      {{notificationsAutoWatchPreferences user="$doc.documentReference" /}}
-      )))
-      #end
-      ######################################################
       ### APPLICATIONS
       ######################################################
       (% class="profile-section highlighted-profile-section column full" %)
@@ -330,7 +319,7 @@
       {{notificationsApplicationsPreferences user="$doc.documentReference" /}}
       )))
       ######################################################
-      ### FILTERS
+      ### SYSTEM FILTERS
       ######################################################
       ## The filters preferences section uses a modal to add a new filter and confirmation boxes (modals) to delete the
       ## filters. As a consequence it doen't work out of the box when displayed inside another modal. Extra development work
@@ -343,6 +332,20 @@
   === {{translation key="notifications.settings.filters.preferences.system.title" /}} ===
   {{notificationsSystemFiltersPreferences user="$doc.documentReference" /}}
 )))
+######################################################
+### AUTOWATCH PREFERENCES
+######################################################
+#if ($services.notification.watch.isEnabled())
+(% class="profile-section highlighted-profile-section notification-top-panel column half" %)
+(((
+(% id="Hnotifications.settings.watch.title" %)
+=== {{translation key="notifications.settings.watch.title" /}} ===
+{{notificationsAutoWatchPreferences user="$doc.documentReference" /}}
+)))
+#end
+######################################################
+### CUSTOM FILTERS
+######################################################
 (% class="profile-section highlighted-profile-section column full" %)
 (((
   (% id="Hnotifications.settings.filters.preferences.custom.title" %)
