@@ -78,12 +78,10 @@
   }
 ])
 ## Setting automaticaly url &amp; css fields of each category
-#foreach($category in $userMenu)
-  #foreach($subcategory in $category.get('children'))
-    #set($id = $subcategory.get('id')) 
-    #set($discard = $subcategory.put('url', "?category=${id}"))
-    #set($discard = $subcategory.put('cssClass', "user-menu-$id category-tab"))
-  #end
+#foreach($category in $userMenu.get(0).get('children'))
+  #set($id = $category.get('id'))
+  #set($discard = $category.put('url', "?category=${id}"))
+  #set($discard = $category.put('cssClass', "user-menu-$id category-tab"))
 #end
 #########################
 ## Display the left menu
