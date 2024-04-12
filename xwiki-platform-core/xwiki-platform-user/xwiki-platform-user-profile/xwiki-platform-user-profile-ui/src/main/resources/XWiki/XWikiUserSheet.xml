@@ -463,30 +463,6 @@ return XWiki;
   margin: 5px 0 0 5px;
 }
 
-.profile-menu .user-menu-profile:before{
-  content: url("$xwiki.getSkinFile('icons/silk/vcard.png')");
-}
-
-.profile-menu .user-menu-preferences:before{
-  content: url("$xwiki.getSkinFile('icons/silk/wrench.png')");
-}
-
-.profile-menu .user-menu-watchlist:before{
-  content: url("$xwiki.getSkinFile('icons/silk/star.png')");
-}
-
-.profile-menu .user-menu-network:before{
-  content: url("$xwiki.getSkinFile('icons/silk/group.png')");
-}
-
-.profile-menu .user-menu-dashboard:before{
-  content: url("$xwiki.getSkinFile('icons/silk/application_view_tile.png')");
-}
-
-.profile-menu .user-menu-wikis:before{
-  content: url("$xwiki.getSkinFile('icons/silk/chart_organisation.png')");
-}
-
 .skin-colibri .profile-menu .group.user-menu-title{
   #set ($menuIcon = "url(${escapetool.S}$xwiki.getSkinFile('icons/silk/user.png')${escapetool.S})")
   #css3_backgroundIconAndLinearGradient($menuIcon, {
