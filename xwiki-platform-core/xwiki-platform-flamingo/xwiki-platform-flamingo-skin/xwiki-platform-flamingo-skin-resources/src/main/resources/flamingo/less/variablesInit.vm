@@ -287,6 +287,11 @@
 ##
 @xwiki-accordion-title-bar-background:"$xwiki.getSkinFile('icons/xwiki/accordion.png')";
 
+@xwiki-font-weight-light: 300; ## Anything under 300 can get difficult to read in some conditions.
+@xwiki-font-weight-normal: normal; ## 400
+@xwiki-font-weight-semibold: 500;
+@xwiki-font-weight-bold: bold; ## 700
+
 ## Some Silk icons
 @xwiki-silk-icon-folder:              "$xwiki.getSkinFile('icons/silk/folder.png')";
 @xwiki-silk-icon-page-white-text:     "$xwiki.getSkinFile('icons/silk/page_white_text.png')";
