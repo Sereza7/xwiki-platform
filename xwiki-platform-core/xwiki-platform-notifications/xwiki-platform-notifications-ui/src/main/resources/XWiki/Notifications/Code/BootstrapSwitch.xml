@@ -157,6 +157,23 @@ define('xwiki-bootstrap-switch', ['jquery', 'bootstrap', 'bootstrap-switch'], fu
       return container.html();
     }
   };
+  
+  // Each bootstrap switch contains four interactive elements. Visually, it's needed to make it work. However, all four of those are highlighted next to each other with a screen reader.
+  // We want to hide semantically the three spans that do not convey more functionality for SR users. More about this in the comments of XWIKI-22198
+  var hideSwitchParts = function(bootstrapSwitch) {
+    bootstrapSwitch.get(0).parentNode.innerHTML = bootstrapSwitch.get(0).parentNode.innerHTML.replaceAll('&lt;span', '&lt;span role="presentation"');
+  };
+  // The bootstrap switches use the content attribute `checked` to keep the state of the checkbox. However, the IDL `checked` attribute is not updated, this causes a lack of functionality with screen readers.
+  // We make sure that this state is kept up to date too.
+  var addCheckedAttributeListener = function(bootstrapSwitch) {
+    var observer = new MutationObserver(function(mutationRecords) {
+      console.log('checked changed');
+      bootstrapSwitch.get(0).checked = true;
+    });
+    observer.observe(bootstrapSwitch.get(0), {
+      attributes: true,
+      attributeFilter: ['checked'] });
+  };
 
   // Keep a reference to the original Bootstrap Switch function in case someone needs the default behavior.
   $.fn.bootstrapSwitchOrig = $.fn.bootstrapSwitch;
@@ -168,10 +185,18 @@ define('xwiki-bootstrap-switch', ['jquery', 'bootstrap', 'bootstrap-switch'], fu
       // The caller wants to set multiple options, including the label.
       option.labelText = fixLabel(option.labelText);
     }
-    return this.bootstrapSwitchOrig.apply(this, arguments);
+    var bootstrapSwitch = this.bootstrapSwitchOrig.apply(this, arguments);
+    try {
+      hideSwitchParts(bootstrapSwitch);
+      addCheckedAttributeListener(bootstrapSwitch);
+    } catch (e) {
+      console.log(e.toString());
+    }
+    
+    return bootstrapSwitch;
   };
 
-  // Copy data (such as default configuration, costructor) from the original Bootstrap Switch function.
+  // Copy data (such as default configuration, constructor) from the original Bootstrap Switch function.
   $.extend($.fn.bootstrapSwitch, $.fn.bootstrapSwitchOrig);
 
   [
