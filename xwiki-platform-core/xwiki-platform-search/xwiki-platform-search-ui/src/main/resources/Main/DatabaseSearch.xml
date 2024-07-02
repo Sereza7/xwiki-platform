@@ -134,7 +134,8 @@
         'space': $space,
         'text': $text
       })))
-      &lt;a href="$rssURL" class="hasIcon iconRSS"&gt;
+      &lt;a href="$rssURL"&gt;
+        $services.icon.renderHTML('feed')
         $services.localization.render('search.rss', ["[$escapetool.xml($text)]"])
       &lt;/a&gt;
     {{/html}}
