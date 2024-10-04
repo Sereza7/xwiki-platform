@@ -187,7 +187,7 @@ $xwiki.jsfx.use('uicomponents/edit/editableProperty.js', {'forceSkinAction': tru
     </label>
   </dt>
   <dd id=""information-reference"">
-    <div class=""reference-group input-group flat-buttons"">
+    <div class=""reference-group input-group"">
       #set ($globalHint = $services.localization.render('core.viewers.information.pageReference.globalButton'))
       <span class=""input-group-btn"">
         <button id=""button-inout"" class=""btn btn-default"" type=""button"" title=""$escapetool.xml($globalHint)"">
