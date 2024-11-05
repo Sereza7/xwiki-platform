@@ -36,10 +36,14 @@
   >
     <template #viewer>
       <input
+          :id="entry.value + '-' + propertyId + '-input'"
           type='checkbox'
           class='toggleableFilterPreferenceCheckbox'
           ref="input"
       />
+      <label class='sr-only' :for="entry.value + '-' + propertyId + '-input'">
+        {{ $t('livedata.notification.toggle.label')}}
+      </label>
       <!-- We keep this section hidden as it is only there to be copied when initializing the toggle. -->
       <span v-show="false">
         <XWikiIcon

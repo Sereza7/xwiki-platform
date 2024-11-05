@@ -1042,12 +1042,18 @@ require(['jquery', 'xwiki-meta', 'ApplicationWidget', 'xwiki-bootstrap-switch', 
       &lt;/th&gt;
       ## Alert switch
       &lt;td class="notificationAppCell loading" data-format="alert"&gt;
-        &lt;input type="checkbox" class="notificationAppCheckbox hidden"/&gt;
+        &lt;input id="switch-$escapetool.xml($type.applicationName)-alert" type="checkbox" class="notificationAppCheckbox"/&gt;
+        &lt;label for="switch-$escapetool.xml($type.applicationName)-alert" class="sr-only"&gt;
+          $escapetool.xml($services.localization.render('notifications.settings.applications.table.alert.toggle.label',[$type.applicationName]))
+        &lt;/label&gt;
       &lt;/td&gt;
       ## Email switch
       #if ($services.notification.areEmailsEnabled())
         &lt;td class="notificationAppCell loading" data-format="email"&gt;
-          &lt;input type="checkbox" class="notificationAppCheckbox hidden"/&gt;
+          &lt;input id="switch-$escapetool.xml($type.applicationName)-email" type="checkbox" class="notificationAppCheckbox"/&gt;
+          &lt;label for="switch-$escapetool.xml($type.applicationName)-email" class="sr-only"&gt;
+            $escapetool.xml($services.localization.render('notifications.settings.applications.table.email.toggle.label',[$type.applicationName]))
+          &lt;/label&gt;
         &lt;/td&gt;
       #end
       ## Collapse button
@@ -1093,7 +1099,11 @@ require(['jquery', 'xwiki-meta', 'ApplicationWidget', 'xwiki-bootstrap-switch', 
   #end
   &lt;td class="notificationTypeCell loading" data-eventtype="$!escapetool.xml($type.eventType)" data-format="$format" data-filter="${type.filter}"&gt;
     &lt;div class="hidden"&gt;
-      &lt;input type="checkbox" class="notificationTypeCheckbox" $checked/&gt;
+      #set ($inputId = "switch-$escapetool.xml($type.applicationName)-$!stringtool.replaceChars($!escapetool.xml($type.eventType), '. ', '-')-$format")
+      &lt;input id="$inputId" type="checkbox" class="notificationTypeCheckbox" $checked/&gt;
+      &lt;label for="$inputId" class="sr-only"&gt;
+        $escapetool.xml($services.localization.render('notifications.settings.applications.table.eventtype.toggle.label',[$type.applicationName, $type.eventType, $format]))
+      &lt;/label&gt;
     &lt;/div&gt;
   &lt;/td&gt;
 #end

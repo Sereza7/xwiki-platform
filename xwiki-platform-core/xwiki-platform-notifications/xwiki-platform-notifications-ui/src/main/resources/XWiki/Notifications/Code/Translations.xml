@@ -163,6 +163,9 @@ notifications.settings.applications.hint=This is the list of applications that c
 notifications.settings.applications.forGuest=Log in or register to handle your notification settings.
 notifications.settings.applications.appName=Name
 notifications.settings.applications.table.dropdown.toggle.label=Toggle the details for notifications from the {0} application.
+notifications.settings.applications.table.alert.toggle.label=Toggle the notification alerts for the {0} application.
+notifications.settings.applications.table.email.toggle.label=Toggle the notification emails for the {0} application.
+notifications.settings.applications.table.eventtype.toggle.label= Toggle the notification {2} for the {1} events of the {0} application.
 notifications.settings.events=Events
 notifications.settings.watch.title=Watched Pages
 notifications.settings.watch.autowatchmode=Automatic page watching
@@ -305,6 +308,10 @@ notifications.watch.modal.option.unblockwiki.hint=This option doesn't only impac
 notifications.watch.modal.close=Close without saving
 notifications.watch.modal.savechanges=Save changes
 notifications.watch.modal.gotosettings=Manage all notifications settings
+
+# Livedata toggle displayer
+
+livedata.notification.toggle.label=Toggle those notifications.
 
 ## Used to indicate where deprecated keys start
 #@deprecatedstart

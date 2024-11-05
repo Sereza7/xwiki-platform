@@ -161,7 +161,7 @@ define('xwiki-bootstrap-switch', ['jquery', 'bootstrap', 'bootstrap-switch'], fu
   // Each bootstrap switch contains four interactive elements. Visually, it's needed to make it work. However, all four of those are highlighted next to each other with a screen reader.
   // We want to hide semantically the three spans that do not convey more functionality for SR users. More about this in the comments of XWIKI-22198
   var hideSwitchParts = function(bootstrapSwitch) {
-    bootstrapSwitch.get(0).parentNode.innerHTML = bootstrapSwitch.get(0).parentNode.innerHTML.replaceAll('&lt;span', '&lt;span role="presentation"');
+    $(bootstrapSwitch.get(0)).parent().find('span').attr('role','presentation');
   };
   // The bootstrap switches use the content attribute `checked` to keep the state of the checkbox. However, the IDL `checked` attribute is not updated, this causes a lack of functionality with screen readers.
   // We make sure that this state is kept up to date too.
@@ -187,8 +187,8 @@ define('xwiki-bootstrap-switch', ['jquery', 'bootstrap', 'bootstrap-switch'], fu
     }
     var bootstrapSwitch = this.bootstrapSwitchOrig.apply(this, arguments);
     try {
-      hideSwitchParts(bootstrapSwitch);
-      addCheckedAttributeListener(bootstrapSwitch);
+      hideSwitchParts(this.bootstrapSwitchOrig);
+      addCheckedAttributeListener(this.bootstrapSwitchOrig);
     } catch (e) {
       console.log(e.toString());
     }
@@ -334,6 +334,11 @@ define('xwiki-bootstrap-switch', ['jquery', 'bootstrap', 'bootstrap-switch'], fu
     displays the switch badly when inside a table with .hyphenate style. Moreover, the standard Bootstrap Switch styles
     add a zero-width-space before all descendant SPANs (why?) which increases the height of the switch in Firefox. */
   white-space: nowrap;
+}
+
+.bootstrap-switch input[type='radio'],
+.bootstrap-switch input[type='checkbox'] {
+  visibility: unset;
 }</code>
     </property>
     <property>

@@ -264,7 +264,8 @@ define('xwiki-livedata', [
         "footnotes.computedTitle",
         "footnotes.propertyNotViewable",
         "bottombar.noEntries",
-        "error.updateEntriesFailed"
+        "error.updateEntriesFailed",
+        "notification.toggle.label"
       ],
     }).then(() => {
       translationsLoadedResolve(true);
