@@ -186,13 +186,8 @@ define('xwiki-bootstrap-switch', ['jquery', 'bootstrap', 'bootstrap-switch'], fu
       option.labelText = fixLabel(option.labelText);
     }
     var bootstrapSwitch = this.bootstrapSwitchOrig.apply(this, arguments);
-    try {
-      hideSwitchParts(this.bootstrapSwitchOrig);
-      addCheckedAttributeListener(this.bootstrapSwitchOrig);
-    } catch (e) {
-      console.log(e.toString());
-    }
-    
+    hideSwitchParts(this);
+    addCheckedAttributeListener(this);
     return bootstrapSwitch;
   };
 

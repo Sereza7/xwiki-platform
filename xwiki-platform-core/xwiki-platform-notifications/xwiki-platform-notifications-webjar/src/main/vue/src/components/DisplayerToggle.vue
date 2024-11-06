@@ -36,12 +36,12 @@
   >
     <template #viewer>
       <input
-          :id="entry.value + '-' + propertyId + '-input'"
+          :id="inputId"
           type='checkbox'
           class='toggleableFilterPreferenceCheckbox'
           ref="input"
       />
-      <label class='sr-only' :for="entry.value + '-' + propertyId + '-input'">
+      <label :for="inputId" class='sr-only'>
         {{ $t('livedata.notification.toggle.label')}}
       </label>
       <!-- We keep this section hidden as it is only there to be copied when initializing the toggle. -->
@@ -67,6 +67,8 @@
 import {displayerMixin, BaseDisplayer, XWikiIcon} from "xwiki-livedata-vue";
 import $ from "jquery";
 
+let uniqueInputId = 0
+
 export default {
   name: "displayer-toggle",
   components: {BaseDisplayer, XWikiIcon},
@@ -79,6 +81,7 @@ export default {
     }
   },
   data() {
+    uniqueInputId+=1
     return {
       // When this value changes to true following the ready from XWikiIcon, the toggle is initialized.
       iconReady: false,
@@ -86,7 +89,8 @@ export default {
       innerDisabled: this.entry[`${this.propertyId}_disabled`],
       innerData: {
         ... this.entry[`${this.propertyId}_data`]
-      }
+      },
+      inputId: this.propertyId + '-input-' + uniqueInputId
     }
   },
   watch: {
