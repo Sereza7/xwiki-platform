@@ -352,6 +352,9 @@ class RegisterIT
             // TODO: clean up this test with a better final assertion. 
             //  As of now, the string retrieved changes a lot depending on the test parameters
             // The assertion should be less strong so that we can clearly show these differences.
+            // See XWIKI-22648: Improve the test registerWikiSyntaxName in RegisterIT 
+            // https://jira.xwiki.org/browse/XWIKI-22648 
+            
             assertEquals(String.format("%s%s %s (%s)%s", messagePrefix, firstName, lastName,
                     AbstractRegistrationPage.JOHN_SMITH_USERNAME, 
                     !closedWiki&&withRegistrationConfig ? "" : ": Registration successful."),
