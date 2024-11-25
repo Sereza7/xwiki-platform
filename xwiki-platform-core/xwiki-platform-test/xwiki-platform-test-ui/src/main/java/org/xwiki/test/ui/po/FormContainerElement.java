@@ -92,7 +92,7 @@ public class FormContainerElement extends BaseElement
           Not all forms use live-validation, we make sure the last element has some validation going on before waiting.
           */
         if(!valuesByElements.isEmpty() && lastElement != null && !lastElement.findElements(
-            By.xpath("//following-sibling::span[contains(@class, 'LV_validation_message')]"))
+            By.xpath("/following-sibling::span[contains(@class, 'LV_validation_message')]"))
             .isEmpty()) {
             WebElement finalLastElement = lastElement;
             getDriver().waitUntilCondition(driver -> !finalLastElement.getAttribute(CLASS_ATTRIBUTE).isEmpty());
