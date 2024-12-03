@@ -498,6 +498,9 @@
           editor.config['xwiki-focusedplaceholder'].placeholder[tagName] = 'xwiki-slash.placeholder';
         }
       });
+      // We remove the Tab (key = 9) to commit by default, in order to not hinder navigation.
+      // We let the Enter (key = 13).
+      editor.config.autocomplete_commitKeystrokes = [13]; // jshint ignore:line
     },
 
     init: function(editor) {
