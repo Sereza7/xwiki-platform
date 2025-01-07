@@ -34,6 +34,10 @@
   'rootData': {},
   'showRoot': false
 })
+## We don't want to reset this value if it's already been set in a previous call of this template
+#if (!$treeMacroCalls)
+  #set ($treeMacroCalls = 0)
+#end
 
 #macro (tree $options)
   <div #treeAttributes($options)></div>
@@ -69,6 +73,9 @@
   #set ($discard = $macro.options.putAll($options))
   #if ($macro.options.id)
     #set ($discard = $attributes.put('id', $macro.options.id))
+  #else
+    #set ($discard = $attributes.put('id', "tree-macro-$treeMacroCalls"))
+    #set( $treeMacroCalls = $treeMacroCalls + 1)
   #end
   #set ($classes = ["$!macro.options.get('class')"])
   #set ($noLinks = $macro.options.links != 'true')

@@ -756,6 +756,14 @@ define([
       }), 'tree:ready');
       $(this).jstree($.extend(true, getDefaultParams($(this)), params || {}));
       $.extend($.jstree.reference(this), customTreeAPI, {jobRunner: createJobRunner(this)});
+      var tree = $.jstree.reference(this);
+      const originalCreateNode = tree.create_node;
+      tree.create_node = function (par, node, pos, callback, is_loaded) {
+        // We prefix the object id with the id of the tree. This ensures the object id is unique as long as the tree
+        // id is unique. 
+        node.id = tree.element[0].id + '-' + node.id;
+        originalCreateNode.apply(this, arguments);
+      };
     });
   };
 
