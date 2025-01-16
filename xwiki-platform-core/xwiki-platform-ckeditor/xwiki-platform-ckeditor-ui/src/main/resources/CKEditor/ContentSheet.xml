@@ -262,6 +262,11 @@ del span.cke_widget_inline {
 ins del span.cke_widget_inline,
 del ins span.cke_widget_inline {
   text-decoration-line: underline line-through;
+}
+
+/* Fix the format panel entries when they overflow, which can open frequently on languages different from english. */
+li.cke_panel_listItem &gt; a {
+  white-space: break-spaces;
 }</code>
     </property>
     <property>
