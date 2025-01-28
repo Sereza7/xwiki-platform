@@ -38,7 +38,6 @@ import org.xwiki.display.internal.DocumentContentAsyncExecutor;
 import org.xwiki.display.internal.DocumentContentAsyncRenderer;
 import org.xwiki.display.internal.DocumentContentDisplayer;
 import org.xwiki.display.internal.DocumentTitleDisplayer;
-import org.xwiki.internal.document.DefaultDocumentRequiredRightsManager;
 import org.xwiki.internal.document.DocumentRequiredRightsReader;
 import org.xwiki.internal.script.XWikiScriptContextInitializer;
 import org.xwiki.internal.velocity.XWikiVelocityManager;
@@ -91,6 +90,7 @@ import org.xwiki.script.internal.service.DefaultScriptServiceManager;
 import org.xwiki.script.internal.service.ServicesScriptContextInitializer;
 import org.xwiki.sheet.internal.DefaultSheetManager;
 import org.xwiki.sheet.internal.SheetDocumentDisplayer;
+import org.xwiki.template.script.TemplateScriptService;
 import org.xwiki.test.annotation.ComponentList;
 import org.xwiki.velocity.internal.DefaultVelocityContextFactory;
 import org.xwiki.velocity.internal.InternalVelocityEngine;
@@ -306,13 +306,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
     // Template Manager
     DefaultTemplateManager.class,
     InternalTemplateManager.class,
+    TemplateScriptService.class,
     TemplateContext.class,
     VelocityTemplateEvaluator.class,
     TemplateAsyncRenderer.class,
     DefaultCacheControl.class,
 
     // Required rights (needed for Document/Object API)
-    DefaultDocumentRequiredRightsManager.class,
     DocumentRequiredRightsReader.class
 })
 @Inherited
