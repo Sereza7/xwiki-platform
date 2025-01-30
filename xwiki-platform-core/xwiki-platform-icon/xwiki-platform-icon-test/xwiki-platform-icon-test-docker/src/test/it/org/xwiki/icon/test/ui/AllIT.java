@@ -35,4 +35,10 @@ class AllIT
     class NestedIconThemesRestIT extends IconThemesRestIT
     {
     }
+
+    @Nested
+    @DisplayName("Icon Picker tests")
+    class NestedIconPickerIT extends IconPickerIT
+    {
+    }
 }
