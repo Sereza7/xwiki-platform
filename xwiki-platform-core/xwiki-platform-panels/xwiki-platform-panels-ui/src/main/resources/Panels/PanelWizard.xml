@@ -303,20 +303,20 @@
   #set ($discard = $xwiki.jsx.use('Panels.PanelWizard'))
   #set ($discard = $xwiki.ssx.use('Panels.PanelWizard'))
   &lt;ul class="nav nav-tabs" role="tablist" id="panelEditorSteps"&gt;
-    &lt;li role="presentation" class="active"&gt;
+    &lt;li role="presentation"&gt;
       &lt;a href="#PageLayoutSection" aria-controls="PageLayoutSection" role="tab" data-toggle="tab"
         &gt;$escapetool.xml($services.localization.render('panelwizard.pagelayout'))&lt;/a&gt;
     &lt;/li&gt;
-    &lt;li role="presentation"&gt;
+    &lt;li role="presentation" class="active"&gt;
       &lt;a href="#PanelListSection" aria-controls="PanelListSection" role="tab" data-toggle="tab"
         &gt;$escapetool.xml($services.localization.render('panelwizard.panellist'))&lt;/a&gt;
     &lt;/li&gt;
   &lt;/ul&gt;
   &lt;div class="tab-content"&gt;
-    &lt;div role="tabpanel" class="tab-pane active xform" id="PageLayoutSection"&gt;
+    &lt;div role="tabpanel" class="tab-pane xform" id="PageLayoutSection"&gt;
       #displayPageLayoutSection
     &lt;/div&gt;
-    &lt;div role="tabpanel" class="tab-pane" id="PanelListSection"&gt;
+    &lt;div role="tabpanel" class="tab-pane active" id="PanelListSection"&gt;
       {{/html}}
 
 #displayPanelListSection
