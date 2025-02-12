@@ -19,35 +19,30 @@
  */
 package org.xwiki.container.servlet.events;
 
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionEvent;
-
 import org.xwiki.observation.event.Event;
 
 /**
- * Event triggered when a new {@link javax.servlet.http.HttpSession} is created.
- * This event is the xwiki event triggered when
- * {@link javax.servlet.http.HttpSessionListener#sessionCreated(HttpSessionEvent)} is called.
- *
+ * Event triggered when a {@link jakarta.servlet.http.HttpSession} is destroyed.
+ * <p>
+ * This event is the XWiki event triggered when
+ * {@link jakarta.servlet.http.HttpSessionListener#sessionDestroyed(jakarta.servlet.http.HttpSessionEvent)} is called.
+ * <p>
  * Note that this event should *not* be serializable: we probably don't want it to be sent remotely.
- *
+ * <p>
  * The following information are also sent:
  * <ul>
- *     <li>source: the {@link HttpSession} that has been created</li>
- *     <li>data: null</li>
+ * <li>source: the {@link jakarta.servlet.http.HttpSession} that is about to be destroyed</li>
+ * <li>data: null</li>
  * </ul>
  *
  * @version $Id$
- * @since 14.5
- * @since 14.4.1
- * @deprecated use {@link HttpSessionCreatedEvent} instead
+ * @since 17.1.0RC1
  */
-@Deprecated(since = "17.1.0RC1")
-public class SessionCreatedEvent implements Event
+public class HttpSessionDestroyedEvent implements Event
 {
     @Override
     public boolean matches(Object otherEvent)
     {
-        return otherEvent instanceof SessionCreatedEvent;
+        return otherEvent instanceof HttpSessionDestroyedEvent;
     }
 }

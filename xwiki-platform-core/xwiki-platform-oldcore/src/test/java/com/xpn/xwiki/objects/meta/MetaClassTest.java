@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+/*
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  *
@@ -18,20 +16,33 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
--->
+ */
+package com.xpn.xwiki.objects.meta;
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.xwiki.platform</groupId>
-    <artifactId>xwiki-platform-distribution-debian-tomcat10</artifactId>
-    <version>17.1.0-SNAPSHOT</version>
-  </parent>
-  <artifactId>xwiki-platform-distribution-debian-tomcat10-pgsql</artifactId>
-  <name>XWiki Platform - Distribution - Debian - Tomcat ${debian.tomcat.version} - Postgres SQL</name>
-  <packaging>deb</packaging>
-  <description>XWiki Tomcat${debian.tomcat.version}/PostgreSQL</description>
-  <properties>
-    <debian.package>xwiki-tomcat${debian.tomcat.version}-pgsql</debian.package>
-  </properties>
-</project>
+import org.junit.jupiter.api.Test;
+import org.xwiki.test.annotation.ComponentList;
+
+import com.xpn.xwiki.objects.PropertyInterface;
+import com.xpn.xwiki.test.junit5.mockito.OldcoreTest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+/**
+ * Validate {@link MetaClass}.
+ * 
+ * @version $Id$
+ */
+@OldcoreTest
+@ComponentList(StringMetaClass.class)
+class MetaClassTest
+{
+    @Test
+    void fieldVSPropertyName()
+    {
+        MetaClass metaClass = new MetaClass();
+
+        PropertyInterface property = metaClass.get("String");
+
+        assertEquals("String", property.getName());
+    }
+}
