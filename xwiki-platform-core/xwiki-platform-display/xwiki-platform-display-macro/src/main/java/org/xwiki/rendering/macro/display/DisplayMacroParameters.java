@@ -64,7 +64,7 @@ public class DisplayMacroParameters
      */
     @PropertyDescription("the reference of the resource to display")
     @PropertyGroup("stringReference")
-    @PropertyFeature("reference")
+    @PropertyFeature(value = "reference", mandatory = true)
     @PropertyDisplayType(EntityReferenceString.class)
     public void setReference(String reference)
     {

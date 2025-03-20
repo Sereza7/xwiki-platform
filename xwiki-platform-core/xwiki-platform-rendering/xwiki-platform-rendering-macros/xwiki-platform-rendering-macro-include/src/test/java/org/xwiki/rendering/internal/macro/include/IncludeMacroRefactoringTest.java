@@ -50,6 +50,7 @@ import org.xwiki.rendering.listener.reference.DocumentResourceReference;
 import org.xwiki.rendering.listener.reference.PageResourceReference;
 import org.xwiki.rendering.listener.reference.ResourceReference;
 import org.xwiki.rendering.macro.MacroRefactoringException;
+import org.xwiki.rendering.macro.parameter.MacroParameterException;
 import org.xwiki.test.LogLevel;
 import org.xwiki.test.annotation.ComponentList;
 import org.xwiki.test.junit5.LogCaptureExtension;
@@ -110,8 +111,8 @@ class IncludeMacroRefactoringTest
     void replaceDocumentReferenceWhenNoReferenceParameterSet() throws Exception
     {
         MacroBlock block = new MacroBlock("include", Collections.emptyMap(), false);
-        assertEquals(Optional.empty(), this.includeMacroRefactoring.replaceReference(block, null, null,
-            (DocumentReference) null, false, Map.of()));
+        assertThrows(MacroRefactoringException.class, () -> this.includeMacroRefactoring.replaceReference(block, 
+        null, null, (DocumentReference) null, false, Map.of()));
     }
 
     @Test

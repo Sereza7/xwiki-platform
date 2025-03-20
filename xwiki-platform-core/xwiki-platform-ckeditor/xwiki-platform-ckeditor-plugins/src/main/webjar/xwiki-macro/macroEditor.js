@@ -163,7 +163,7 @@ define('macroParameterTreeBuilder', ['jquery', 'l10n!macroEditor'], function($, 
         if (!featureGroupNode) {
           featureGroupNodes[childNode.data.feature] = featureGroupNode = {
             type: 'group-single',
-            data: {feature: childNode.data.feature},
+            data: {feature: childNode.data.feature, featureMandatory: childNode.data.featureMandatory},
             children: []
           };
           children.push(featureGroupNode);
@@ -172,6 +172,11 @@ define('macroParameterTreeBuilder', ['jquery', 'l10n!macroEditor'], function($, 
       } else {
         children.push(childNode);
       }
+    });
+    // If there's only one visible property for a feature and this feature is mandatory
+    // We set the property itself as mandatory
+    featureGroupNodes.forEach(function(featureGroup) {
+      if (featureGroup.data.featureMandatory && featureGroup.children.filter())
     });
     parentNode.children = children;
   };
@@ -435,15 +440,23 @@ define('macroParameterTreeDisplayer', ['jquery', 'l10n!macroEditor'], function($
   macroParameterTemplate =
     '<li class="macro-parameter">' +
       '<div class="macro-parameter-name"></div>' +
+      '<div class="macro-parameter-mandatory">*<div class="sr-only"></div></div>' +
       '<div class="macro-parameter-description"></div>' +
     '</li>',
 
   displayMacroParameter = function(parameter) {
     var output = $(macroParameterTemplate);
     output.attr('data-id', parameter.id).attr('data-type', parameter.type);
+    output.find('.macro-parameter-mandatory .sr-only').text('(' + translations.get('propertyMandatory') + ')');
     output.find('.macro-parameter-name').text(parameter.name);
     output.find('.macro-parameter-description').text(parameter.description);
-    output.toggleClass('mandatory', !!parameter.mandatory);
+    // We show the parameter as mandatory in two situations:
+    // The parameter is mandatory.
+    // The feature implemented by this parameter is mandatory and the parameter is the only visible parameter to
+    // implement this feature.
+    let parameterMandatory = !!parameter.mandatory 
+      || (parameter.feature!='' && para
+    output.toggleClass('mandatory', );
     output.toggleClass('hidden', !!parameter.hidden);
     output.append(displayMacroParameterField(parameter));
     return output;
@@ -538,7 +551,6 @@ define(
   createMacroEditor = function(macroCall, macroDescriptor) {
     var macroEditor = $(macroEditorTemplate);
     macroEditor.find('.macro-name').text(macroDescriptor.name);
-    macroEditor.find('.macro-description').text(macroDescriptor.description);
     var macroParameterTree = macroParameterTreeBuilder.build(macroDescriptor);
     macroParameterTreeSorter.sort(macroParameterTree, macroCall, this.data('hiddenMacroParameters'));
     macroEditor.find('.macro-parameters').append(macroParameterTreeDisplayer.display(macroParameterTree,

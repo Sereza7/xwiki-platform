@@ -340,6 +340,9 @@
     #if ("$!groupDescriptor.feature" != '')
       #set ($parentGroup.feature = $groupDescriptor.feature)
     #end
+    #if ("$!groupDescriptor.featureMandatory" != '')
+      #set ($parentGroup.featureMandatory = $groupDescriptor.featureMandatory)
+    #end
   #elseif ($groupDescriptor.feature)
     ## This group is made of a single parameter. The feature then refers to this parameter.
     #set ($translatedParameterDescriptor.feature = $groupDescriptor.feature)
