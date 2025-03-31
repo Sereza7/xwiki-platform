@@ -1869,16 +1869,16 @@
 // Cerulean 3.3.5
 // CSS Variables equivalents
 // --------------------------------------------------
-//== Colors
+
 :root {
 
+//== Colors
 -/**/-gray-base:              #000;
--/**/-gray-darker:            ~"color-mix(in srgb, var(--gray-base), white 13.5%)";
--/**/-gray-dark:              ~"color-mix(in srgb, var(--gray-base), white 20%)";
--/**/-gray:                   ~"color-mix(in srgb, var(--gray-base), white 33.5%)";
--/**/-gray-light:             ~"color-mix(in srgb, var(--gray-base), white 60%)";
--/**/-gray-lighter:           ~"color-mix(in srgb, var(--gray-base), white 93.5%)";
-
+-/**/-gray-darker:            ~"hsl(from var(--gray-base) h s calc(l + 0.135))";
+-/**/-gray-dark:              ~"hsl(from var(--gray-base) h s calc(l + 0.20))";
+-/**/-gray:                   ~"hsl(from var(--gray-base) h s calc(l + 0.335))";
+-/**/-gray-light:             ~"hsl(from var(--gray-base) h s calc(l + 0.6))";
+-/**/-gray-lighter:           ~"hsl(from var(--gray-base) h s calc(l + 0.935))";
 -/**/-brand-primary:         #2FA4E7;
 -/**/-brand-success:         #73A839;
 -/**/-brand-info:            #033C73;
@@ -1890,7 +1890,7 @@
 -/**/-body-bg:               #fff;
 -/**/-text-color:            ~"var(--gray)";
 -/**/-link-color:            ~"var(--brand-primary)";
--/**/-link-hover-color:      ~"color-mix(in srgb, var(--link-color), black 15%)";
+-/**/-link-hover-color:      ~"hsl(from var(--link-color) h s calc(l - 0.15))";
 -/**/-link-hover-decoration: underline;
         
 //== Typography
@@ -1898,21 +1898,17 @@
 -/**/-font-family-serif:       Georgia, "Times New Roman", Times, serif;
 -/**/-font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace;
 -/**/-font-family-base:        ~"var(--font-family-sans-serif)";
-
 -/**/-font-size-base:          14px;
 -/**/-font-size-large:         ~"round(up, calc(var(--font-size-base) * 1.25), 1px)";
 -/**/-font-size-small:         ~"round(up, calc(var(--font-size-base) * 0.85), 1px)";
-
 -/**/-font-size-h1:            ~"round(down, calc(var(--font-size-base) * 2.6), 1px)";
 -/**/-font-size-h2:            ~"round(down, calc(var(--font-size-base) * 2.15), 1px)";
 -/**/-font-size-h3:            ~"round(up, calc(var(--font-size-base) * 1.7), 1px)";
 -/**/-font-size-h4:            ~"round(up, calc(var(--font-size-base) * 1.25), 1px)";
 -/**/-font-size-h5:            ~"var(--font-size-base)";
 -/**/-font-size-h6:            ~"round(up, calc(var(--font-size-base) * 0.85), 1px)";
-
 -/**/-line-height-base:        1.428571429; // 20/14
 -/**/-line-height-computed:    ~"round(down, calc(var(--font-size-base) * var(--line-height-base)), 1px)";
-
 -/**/-headings-font-family:    ~"var(--font-family-base)";
 -/**/-headings-font-weight:    500;
 -/**/-headings-line-height:    1.1;
@@ -1972,7 +1968,6 @@
 -/**/-btn-danger-bg:                  ~"var(--brand-danger)";
 -/**/-btn-danger-border:              ~"var(--btn-danger-bg)";
 -/**/-btn-link-disabled-color:        ~"var(--gray-light)";
-
 -/**/-btn-border-radius-base:         ~"var(--border-radius-base)";
 -/**/-btn-border-radius-large:        ~"var(--border-radius-large)";
 -/**/-btn-border-radius-small:        ~"var(--border-radius-small)";
@@ -2021,6 +2016,8 @@
 
 //== Media queries breakpoints
 -/**/-screen-xs:                  480px;
+-/**/-screen-xs-min:              ~"var(--screen-xs)";
+-/**/-screen-phone:               ~"var(--screen-xs-min)";
 -/**/-screen-sm:                  768px;
 -/**/-screen-sm-min:              ~"var(--screen-sm)";
 -/**/-screen-tablet:              ~"var(--screen-sm-min)";
@@ -2057,36 +2054,36 @@
 -/**/-navbar-collapse-max-height:       340px;
 -/**/-navbar-default-color:             #ddd;
 -/**/-navbar-default-bg:                ~"var(--brand-primary)";
--/**/-navbar-default-border:            ~"color-mix(in srgb, var(--navbar-default-bg), black 6.5%)";
+-/**/-navbar-default-border:            ~"hsl(from var(--navbar-default-bg) h s calc(l - 0.065))";
 -/**/-navbar-default-link-color:                #fff;
 -/**/-navbar-default-link-hover-color:          #fff;
--/**/-navbar-default-link-hover-bg:             ~"color-mix(in srgb, var(--navbar-default-bg), black 10%)";
+-/**/-navbar-default-link-hover-bg:             ~"hsl(from var(--navbar-default-bg) h s calc(l - 0.1))";
 -/**/-navbar-default-link-active-color:         #fff;
--/**/-navbar-default-link-active-bg:            ~"color-mix(in srgb, var(--navbar-default-bg), black 10%)";
+-/**/-navbar-default-link-active-bg:            ~"hsl(from var(--navbar-default-bg) h s calc(l - 0.1))";
 -/**/-navbar-default-link-disabled-color:       #ddd;
 -/**/-navbar-default-link-disabled-bg:          transparent;
 -/**/-navbar-default-brand-color:               ~"var(--navbar-default-link-color)";
 -/**/-navbar-default-brand-hover-color:         #fff;
 -/**/-navbar-default-brand-hover-bg:            none;
--/**/-navbar-default-toggle-hover-bg:           ~"color-mix(in srgb, var(--navbar-default-bg), black 10%)";
+-/**/-navbar-default-toggle-hover-bg:           ~"hsl(from var(--navbar-default-bg) h s calc(l - 0.1))";
 -/**/-navbar-default-toggle-icon-bar-bg:        #fff;
--/**/-navbar-default-toggle-border-color:       ~"color-mix(in srgb, var(--navbar-default-bg), black 10%)";
+-/**/-navbar-default-toggle-border-color:       ~"hsl(from var(--navbar-default-bg) h s calc(l - 0.1))";
 -/**/-navbar-inverse-color:                      #fff;
 -/**/-navbar-inverse-bg:                         ~"var(--brand-info)";
--/**/-navbar-inverse-border:                     ~"color-mix(in srgb, var(--navbar-inverse-bg), black 5%)";
+-/**/-navbar-inverse-border:                     ~"hsl(from var(--navbar-inverse-bg) h s calc(l - 0.05))";
 -/**/-navbar-inverse-link-color:                 #fff;
 -/**/-navbar-inverse-link-hover-color:           #fff;
--/**/-navbar-inverse-link-hover-bg:              ~"color-mix(in srgb, var(--navbar-inverse-bg), black 5%)";
+-/**/-navbar-inverse-link-hover-bg:              ~"hsl(from var(--navbar-inverse-bg) h s calc(l - 0.05))";
 -/**/-navbar-inverse-link-active-color:          #fff;
--/**/-navbar-inverse-link-active-bg:             ~"color-mix(in srgb, var(--navbar-inverse-bg), black 5%)";
+-/**/-navbar-inverse-link-active-bg:             ~"hsl(from var(--navbar-inverse-bg) h s calc(l - 0.05))";
 -/**/-navbar-inverse-link-disabled-color:        #ccc;
 -/**/-navbar-inverse-link-disabled-bg:           transparent;
 -/**/-navbar-inverse-brand-color:                ~"var(--navbar-inverse-link-color)";
 -/**/-navbar-inverse-brand-hover-color:          #fff;
 -/**/-navbar-inverse-brand-hover-bg:             none;
--/**/-navbar-inverse-toggle-hover-bg:            ~"color-mix(in srgb, var(--navbar-inverse-bg), black 5%)";
+-/**/-navbar-inverse-toggle-hover-bg:            ~"hsl(from var(--navbar-inverse-bg) h s calc(l - 0.05))";
 -/**/-navbar-inverse-toggle-icon-bar-bg:         #fff;
--/**/-navbar-inverse-toggle-border-color:        ~"color-mix(in srgb, var(--navbar-inverse-bg), black 5%)";
+-/**/-navbar-inverse-toggle-border-color:        ~"hsl(from var(--navbar-inverse-bg) h s calc(l - 0.05))";
 
 //== Navs
 -/**/-nav-link-padding:                          10px 15px;
@@ -2234,7 +2231,6 @@
 -/**/-list-group-disabled-color:      ~"var(--gray-light)";
 -/**/-list-group-disabled-bg:         ~"var(--gray-lighter)";
 -/**/-list-group-disabled-text-color: ~"var(--list-group-disabled-color)";
-
 -/**/-list-group-link-color:         #555;
 -/**/-list-group-link-hover-color:   ~"var(--list-group-link-color)";
 -/**/-list-group-link-heading-color: #333;
