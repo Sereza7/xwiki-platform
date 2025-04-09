@@ -1,15 +1,17 @@
-//
-// Accordion
-// --------------------------------------------------
+/*
+--------------------------------------------------
+Accordion
+--------------------------------------------------
+*/
 
 .accordionTabTitleBar h1 {
   display:block;
-  background-color: @panel-header-bg;
-  background-image: url(@xwiki-accordion-title-bar-background);
+  background-color: var(--panel-header-bg);
+  background-image: var(--xwiki-accordion-title-bar-background-url);
   background-repeat: no-repeat;
   background-position: center left;
-  border-bottom: 1px solid @xwiki-border-color;
-  color: @panel-header-text;
+  border-bottom: 1px solid var(--xwiki-border-color);
+  color: var(--panel-header-text);
   font: 700 .8em / 1.8em sans-serif;
   margin: 0;
   overflow: hidden;
@@ -18,7 +20,7 @@
 }
 
 .accordionTabContentBox {
-  background: @xwiki-background-secondary-color;
+  background: var(--xwiki-background-secondary-color);
   overflow: auto;
   padding: 5px;
 }

@@ -25,7 +25,7 @@
 @import "before-bootstrap"; // Fixes that must be included BEFORE bootstrap
 @import "bootstrap/bootstrap.less"; // Bootstrap
 @import "variables"; // Bootstrap variables overrided by flamingo
-@import "accordion";
+@import "css/cssStyles.css"; // CSS property styles
 @import "action-menus";
 @import "admin";
 @import "annotations";
