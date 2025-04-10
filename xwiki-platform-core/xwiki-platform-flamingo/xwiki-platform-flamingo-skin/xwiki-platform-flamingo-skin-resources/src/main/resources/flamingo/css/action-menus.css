@@ -1,6 +1,8 @@
-//
-// Action Menus
-// --------------------------------------------------
+/*
+--------------------------------------------------
+Action Menus
+--------------------------------------------------
+*/
 
 #menuview {
   .navbar {
@@ -14,7 +16,7 @@
   .navbar-brand {
     float: none;
     img {
-      height: @navbar-height;
+      height: var(--navbar-height);
       display: inline;
     }
   }
@@ -35,16 +37,15 @@
     margin-right: 0;
     padding-top: 0;
     padding-bottom: 0;
-    .box-shadow(none);
   }
-  @media (max-width: @screen-sm-min) {
+  @media (max-width: var(--screen-sm-min)) {
     .dropdown-menu .divider {
-      background-color: @navbar-default-border;
+      background-color: var(--navbar-default-border);
     }
     .navbar-left {
       float: left;
-      margin-left: @navbar-padding-horizontal;
-      margin-right: @navbar-padding-horizontal;
+      margin-left: var(--navbar-padding-horizontal);
+      margin-right: var(--navbar-padding-horizontal);
       /* Without this rule, the left navbar will cause unexpected layout shifts even when it's empty. */
       &:not(:has(> *)) {
         margin-top: 0;
@@ -53,7 +54,7 @@
   }
 }
 
-@media (max-width: @screen-sm) {
+@media (max-width: var(--screen-sm)) {
   // FIX Bootstrap: Reset custom display for dropdowns inside navbars
   #xwikimainmenu {
     & .open .dropdown-menu {
@@ -61,19 +62,19 @@
       position: absolute;
 
       /* Reset overwritten properties with Bootstrap variables. */
-      border: 1px solid @dropdown-border;
+      border: 1px solid var(--dropdown-border);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 
       & > li > a {
         color: inherit;
 
         &:hover, &:focus {
-          background-color: @dropdown-link-hover-bg;
+          background-color: var(--dropdown-link-hover-bg);
         }
       }
 
       & .divider {
-        background-color: @dropdown-divider-bg;
+        background-color: var(--dropdown-divider-bg);
       }
     }
 
@@ -83,8 +84,8 @@
     }
   }
 }
-// Authentication buttons ========================================================
-// Reduce the spacing between both items if there's both
+/* Authentication buttons ======================================================== */
+/* Reduce the spacing between both items if there's both */
 li:has(#tmLogin) + li #tmRegister {
   padding-right: 8px;
 }
@@ -92,7 +93,7 @@ li:has(+ li #tmRegister) #tmLogin {
   padding-left: 8px;
 }
 
-// Quick search ========================================================
+/* Quick search ======================================================== */
 
 #globalsearch {
   display: flex;
@@ -102,66 +103,66 @@ li:has(+ li #tmRegister) #tmLogin {
   padding: 0;
 
   // Remove the bootstrap border on the form when the screen is small
-  @media (max-width: @screen-sm-max) {
+  @media (max-width: var(--screen-sm-max)) {
     border: none;
   }
 
   .btn {
-    // When the global search is active, the button has an "active"-kind color
-    background-color: @navbar-default-link-active-bg;
-    color: @navbar-default-link-active-color;
+    /* When the global search is active, the button has an "active"-kind color */
+    background-color: var(--navbar-default-link-active-bg);
+    color: var(--navbar-default-link-active-color);
     border: 0;
     border-radius: 0;
     box-shadow: none;
     margin: 0;
-    padding: 10px @navbar-padding-horizontal;
-    @media (min-width: @grid-float-breakpoint) {
-      padding: @navbar-padding-vertical @navbar-padding-horizontal;
+    padding: 10px var(--navbar-padding-horizontal);
+    @media (min-width: var(--grid-float-breakpoint)) {
+      padding: var(--navbar-padding-vertical) var(--navbar-padding-horizontal);
     }
     &:hover,
     &:focus {
-      background-color: @navbar-default-link-hover-bg;
-      color: @navbar-default-link-hover-color;
+      background-color: var(--navbar-default-link-hover-bg);
+      color: var(--navbar-default-link-hover-color);
       box-shadow: none;
     }
     &:active {
-      background-color: @navbar-default-link-active-bg;
-      color: @navbar-default-link-active-color;
+      background-color: var(--navbar-default-link-active-bg);
+      color: var(--navbar-default-link-active-color);
     }
   }
 
-  // The global search input
-  #headerglobalsearchinput { // we need to be that specific to be applied
+  /* The global search input */
+  #headerglobalsearchinput { /* we need to be that specific to be applied */
     border-radius: 0;
     border: 0;
     min-width: 0;
     transition: width 300ms ease-in-out, padding 300ms ease-in-out;
-    width: 200px; // we need to set a width in pixels otherwise the transition is not applied nicely
+    width: 200px; /* we need to set a width in pixels otherwise the transition is not applied nicely */
   }
 
-  // When the global search is closed
+  /* When the global search is closed */
   .btn[aria-expanded='false'] {
-    background-color: @navbar-default-bg;
-    color: @navbar-default-link-color;
+    background-color: var(--navbar-default-bg);
+    color: var(--navbar-default-link-color);
     border: 0;
-    // Except when it is hovering
+    /* Except when it is hovering */
     &:hover,
     &:focus {
-      background-color: @navbar-default-link-hover-bg;
-      color: @navbar-default-link-hover-color;
+      background-color: var(--navbar-default-link-hover-bg);
+      color: var(--navbar-default-link-hover-color);
       box-shadow: none;
     }
     &:active {
-      background-color: @navbar-default-link-active-bg;
-      color: @navbar-default-link-active-color;
+      background-color: var(--navbar-default-link-active-bg);
+      color: var(--navbar-default-link-active-color);
     }
-    // The input has no width (it's hidden basically, but we need to set the width to 0 to have the nice transition)
-    & + #headerglobalsearchinput { // we need to be that specific to be applied
+    /* The input has no width (it's hidden basically, but we need to set the width to 0 to have the nice transition) */
+    & + #headerglobalsearchinput { /* we need to be that specific to be applied */
       width: 0;
       padding: 0;
     }
 
-    // Hides the search result when the focus is not on the search field.
+    /* Hides the search result when the focus is not on the search field. */
     & ~ .searchSuggest {
       opacity: 0;
       max-height: 0;
@@ -169,7 +170,7 @@ li:has(+ li #tmRegister) #tmLogin {
   }
 }
 
-@media (min-width: @screen-sm-min) {
+@media (min-width: var(--screen-sm-min)) {
   .navbar-nav > li > a {
     /* When the page name is long, add ellipsis. */
     max-width: 10em;
@@ -179,34 +180,34 @@ li:has(+ li #tmRegister) #tmLogin {
   }
 }
 
-// Navbar avatar ==========================================================
+/* Navbar avatar ========================================================== */
 
 .navbar-avatar {
   > a {
-    max-height: @navbar-height;
+    max-height: var(--navbar-height);
 
-    > img {
-      @avatar-size: floor((ceil((@navbar-height / 2)) / 2)) * 2;
-      border-radius: @thumbnail-border-radius;
-      height: @avatar-size;
-      margin-top: -@navbar-padding-vertical + (@navbar-height / 2) - (@avatar-size / 2);
+    > img { 
+      --avatar-size: calc(round(down, calc( round(up,calc(var(--navbar-height) / 2), 1px) / 2), 1px) * 2);
+      border-radius: var(--thumbnail-border-radius);
+      height: var(--avatar-size);
+      margin-top: calc( (var(--navbar-height) / 2) - var(--navbar-padding-vertical) - (var(--avatar-size) / 2));
       vertical-align: middle;
-      width: @avatar-size;
+      width: var(--avatar-size);
     }
   }
 }
 
-// Icon in a navbar  ======================================================
+/* Icon in a navbar  ====================================================== */
 
 .icon-navbar {
   cursor: pointer;
 }
 
-// Navbar dropdown ========================================================
+/* Navbar dropdown ======================================================== */
 
-@media (min-width: @screen-sm-min) {
-  // We use mixin guards to simulate conditional assignment. We need the hover and active background color to fall back
-  // on the default background color if transparent (e.g. if the user doesn't specify it in the color theme).
+@media (min-width: var(--screen-sm-min)) {
+  /* We use mixin guards to simulate conditional assignment. We need the hover and active background color to fall back
+   on the default background color if transparent (e.g. if the user doesn't specify it in the color theme). */
   .navbar-dropdown(@bg; @hover-bg; @active-bg) when not (@bg = transparent) and (@hover-bg = transparent) {
     // Make sure the hover background color falls back on the default background color.
     .navbar-dropdown(@bg, @bg, @active-bg)

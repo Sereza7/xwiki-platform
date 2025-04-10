@@ -1,2 +1,3 @@
 /* This file contains all the references to miscellaneous Flamingo style sheets written in native CSS. */
-@import "accordion";
+@import "css/accordion.css";
+@import "css/action-menus.css";

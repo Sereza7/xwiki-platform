@@ -26,7 +26,7 @@
 @import "bootstrap/bootstrap.less"; // Bootstrap
 @import "variables"; // Bootstrap variables overrided by flamingo
 @import "css/cssStyles.css"; // CSS property styles
-@import "action-menus";
+@import "../css/action-menus.css";
 @import "admin";
 @import "annotations";
 @import "buttons";
