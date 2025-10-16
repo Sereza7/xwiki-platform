@@ -33,7 +33,7 @@ $response.setContentType("application/json")
 #set($params = $request.getParameterMap())
 #set($keys = $params.keySet())
 ## Params which are not supposed to be used for filtering
-#set($defaultKeys = ["xpage", "offset", "limit", "wiki", "uorg", "clsname", "space", "reqNo", "sort", "dir"])
+#set($defaultKeys = ["xpage", "offset", "limit", "wiki", "uorg", "clsname", "space", "reqNo", "sort", "dir", "scope"])
 ## Params that should filter the document, not object properties
 #set($docProps = ["fullName", "name"])
 ## The filter being constructed. It will be passed to the rightsmanager API.
@@ -51,18 +51,12 @@ $response.setContentType("application/json")
       #set($discard = $arr.add($NULL))## null => document property
       #set($discard = $arr.add("$value"))
       #set($discard = $filterMap.put("$key", $arr))
-## Question: Why do we order using the filter fields?
-##      #set($discard = $orderList.add("$key"))
     #else
       #set($arr = [])
       ## This may be variable... For the moment, assume it is a StringProperty
       #set($discard = $arr.add("StringProperty"))
       #set($discard = $arr.add("$value"))
       #set($discard = $filterMap.put("$key", $arr))
-##      #set($arr2 = [])
-##      #set($discard = $arr2.add("$key"))
-##      #set($discard = $arr2.add("StringProperty"))
-##      #set($discard = $orderList.add($arr2))
     #end
   #elseif($key == "uorg")
     #set($uorg = $value)
@@ -75,47 +69,68 @@ $response.setContentType("application/json")
 #end
 ##
 ## Get the list of users/groups
-#set($wiki = $request.wiki)
-#if($wiki == "local")
+#if ($request.wiki == 'local' || $request.scope == 'local')
   #if($uorg == "users")
     ## Get local users
     #set($users = $rm.usersApi.getAllMatchedLocalUsers($filterMap, $limit, $off, $orderList))
     #set($matchedCount = $rm.usersApi.countAllMatchedLocalUsers($filterMap))
-  #else
+  #elseif($uorg == "groups")
     ## Get local groups
     #set($users = $rm.groupsApi.getAllMatchedLocalGroups($filterMap, $limit, $off, $orderList))
     #set($matchedCount = $rm.groupsApi.countAllMatchedLocalGroups($filterMap))
+  #else
+    ## Get local users and groups
+    #set ($users = [])
+    #set($discard = $users.addAll($rm.usersApi.getAllMatchedLocalUsers($filterMap, $limit, $off, $orderList)))
+    #set($discard = $users.addAll($rm.groupsApi.getAllMatchedLocalGroups($filterMap, $limit, $off, $orderList)))
+    #set($matchedCountUsers = $rm.usersApi.countAllMatchedLocalUsers($filterMap))
+    #set($matchedCountGroups = $rm.groupsApi.countAllMatchedLocalGroups($filterMap))
+    #set($matchedCount = $matchedCountUsers + $matchedCountGroups)
   #end
-#elseif($wiki == "global")
+#elseif ($request.wiki == 'global' || $request.scope == 'global')
   #if($uorg == "users")
     ## Get global users
     #set($users = $rm.usersApi.getAllMatchedGlobalUsers($filterMap, $limit, $off, $orderList))
     #set($matchedCount = $rm.usersApi.countAllMatchedGlobalUsers($filterMap))
-  #else
+  #elseif($uorg == "groups")
     ## Get global group
     #set($users = $rm.groupsApi.getAllMatchedGlobalGroups($filterMap, $limit, $off, $orderList))
     #set($matchedCount = $rm.groupsApi.countAllMatchedGlobalGroups($filterMap))
+  #else
+    ## Get global users and groups
+    #set ($users = [])
+    #set($discard = $users.addAll($rm.usersApi.getAllMatchedGlobalUsers($filterMap, $limit, $off, $orderList)))
+    #set($discard = $users.addAll($rm.groupsApi.getAllMatchedGlobalGroups($filterMap, $limit, $off, $orderList)))
+    #set($matchedCountUsers = $rm.usersApi.countAllMatchedGlobalUsers($filterMap))
+    #set($matchedCountGroups = $rm.groupsApi.countAllMatchedGlobalGroups($filterMap))
+    #set($matchedCount = $matchedCountUsers + $matchedCountGroups)
   #end
 #else
   #if($uorg == "users")
     ## Get both local and global users
     #set($users = $rm.usersApi.getAllMatchedUsers($filterMap, $limit, $off, $orderList))
     #set($matchedCount = $rm.usersApi.countAllMatchedUsers($filterMap))
-  #else
+  #elseif($uorg == "groups")
     ## Get both local and global groups
     #set($users = $rm.groupsApi.getAllMatchedGroups($filterMap, $limit, $off, $orderList))
     #set($matchedCount = $rm.groupsApi.countAllMatchedGroups($filterMap))
+  #else
+    ## Get both local and global users and groups
+    #set ($users = [])
+    #set($discard = $users.addAll($rm.usersApi.getAllMatchedUsers($filterMap, $limit, $off, $orderList)))
+    #set($discard = $users.addAll($rm.groupsApi.getAllMatchedGroups($filterMap, $limit, $off, $orderList)))
+    #set($matchedCountUsers = $rm.usersApi.countAllMatchedUsers($filterMap))
+    #set($matchedCountGroups = $rm.groupsApi.countAllMatchedGroups($filterMap))
+    #set($matchedCount = $matchedCountUsers + $matchedCountGroups)
   #end
 #end
 #set($rightsWithAllowPrecedence = [ 'admin', 'programming', 'register', 'createwiki' ])
 ### json starts
 #set($userGroupsMap = {})
 #set($discard = $userGroupsMap.put("totalrows", $matchedCount))
-#set($discard = $userGroupsMap.put("reqNo"    , $numbertool.toNumber($request.reqNo).intValue()))
 #set($discard = $userGroupsMap.put("returnedrows", $mathtool.min($matchedCount, $limit)))
 #set($discard = $userGroupsMap.put("offset"   , $offset))
-#set($discard = $userGroupsMap.put("clsname"  , $clsname))
-#set($discard = $userGroupsMap.put("uorg"     , $uorg))
+#set($discard = $userGroupsMap.put("reqNo"    , $numbertool.toNumber($request.reqNo).intValue()))
 #set($rows = [])
 #foreach($user in $users)
   #set($wikiname = $user.getWiki())
@@ -170,19 +185,24 @@ $response.setContentType("application/json")
   #set($discard = $row.put("userurl" , $xwiki.getURL($user.fullName)))
   #set($discard = $row.put("allows"  , $allows.keySet()))
   #set($discard = $row.put("denys"   , $denys.keySet()))
-  #if ($uorg == "users")
+  #set($userType = $stringtool.removeEnd($uorg, "s"))
+  #if ($uorg == "usersandgroups")
+    #set($userType = "#if($foreach.index < $matchedCountUsers)user#{else}group#end")
+    #set($discard = $row.put("userType"   , $userType))
+  #end
+  #if ($userType == "user")
     #set($discard = $row.put("userDisplayer",
       "#displayUser($user.documentReference, {'displayLink': $isLocalUser, 'showAlias': true})"))
   #else
     #set($discard = $row.put("userDisplayer",
       "#displayGroup($user.documentReference, {'displayLink': $isLocalUser, 'showAlias': true})"))
   #end
-  #if ($uorg == "groups")
+  #if ($userType == "group")
     #set($discard = $row.put("isuseringroup", $xwiki.getUser().isUserInGroup($user.fullName)))
   #else
     #set($discard = $row.put("isuseringroup", false))
   #end
   #set($discard = $rows.add($row))
 #end ## foreach user in users
-#set($discard = $userGroupsMap.put("rows"     , $rows))
-$jsontool.serialize($userGroupsMap)
+#set($discard = $userGroupsMap.put("rows" , $rows))
+#jsonResponse($userGroupsMap)

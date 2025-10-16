@@ -376,3 +376,143 @@ $xwiki.ssfx.use('js/xwiki/table/livetable.css', true)
     <input type="hidden" name="form_token" value="$!{services.csrf.getToken()}" />
     <input type="submit" value="$services.localization.render('save')" class="sr-only sr-only-focusable" />
 </div> ## xwikieditcontent
+#define ($assignRightsButton)
+  <button id="assignRightsButton" role="button" class="btn btn-primary" data-toggle="modal" data-target="#assignRightsModal">
+    $services.localization.render('rightsmanager.assignRights.text')
+  </button>
+#end
+#define ($assignRightsForm)
+<form class="xform">
+  <dl>
+    <dt>
+      <label for="rightType">
+        $services.localization.render('rightsmanager.assignRights.modal.label')
+        <span class="xRequired">$escapetool.xml($services.localization.render('core.validation.required'))</span>
+      </label>
+    </dt>
+    <dd>
+      <input id="rightType" name="right-type" type="text" size="60" value=""/>
+    </dd>
+    <dt>
+      <label for="username-field-select">
+        $services.localization.render('rightsmanager.assignRights.modal.label')
+        <span class="xRequired">$escapetool.xml($services.localization.render('core.validation.required'))</span>
+      </label>
+    </dt>
+    <dd>
+    #set ($pickerParams = {
+      'id': 'username-field-select-user',
+      'name': 'name',
+      'data-userScope': 'GLOBAL_ONLY'
+    })
+    #userPicker(false, $pickerParams)
+    #set ($discard = $pickerParams.put('id','username-field-select-group'))
+    #groupPicker(false, $pickerParams)
+    </dd>
+  </dl>
+  <h2> $services.localization.render('rightsmanager.assignRights.modal.rights.heading') </h2>
+  <dl>
+    #foreach ($i in [0..$maxlevel])
+      #if ($currentAllowed[$i])
+        <dt>
+          <label for="username-field-select">
+            $services.localization.render("rightsmanager.${levelsRights.get($i)}")
+          </label>
+        </dt>
+        <dd>
+          #set ($rightSetSelectParameters = {
+            'value': 'allow,deny, ',
+            'name': $services.localization.render("rightsmanager.${levelsRights.get($i)}")
+          })
+          #suggestInput($rightSetSelectParameters)
+          <input id="rightType" name="right-type" type="text" size="60" value=""/>
+        </dd>
+      #end
+    #end
+  </dl>
+</form>
+#end
+#define ($assignRightsFooter)
+<button type="button" class="btn btn-default">
+  $services.localization.render('rightsmanager.assignRights.modal.unsetAll')
+</button>
+<span class="buttonwrapper">
+<button type="button" class="btn btn-default close-modal" data-dismiss="modal">
+  $services.localization.render('rightsmanager.assignRights.modal.cancel')
+</button>
+<button type="button" class="btn btn-primary" disabled="disabled">
+  $services.localization.render('rightsmanager.assignRights.modal.save')
+</button>
+</span>
+#end
+#define ($assignRightsModal)
+  <div id="assignRightsModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">
+            $services.localization.render('rightsmanager.assignRights.modal.title')
+          </div>
+          <button type="button" class="close close-modal" data-dismiss="modal">
+            $services.icon.renderHTML('cross')
+            <span class="sr-only">
+              $services.localization.render('rightsmanager.assignRights.modal.close')
+            </span>
+          </button>
+        </div>
+        <div class="modal-body">
+          $assignRightsForm
+        </div>
+        <div class="modal-footer">
+          $assignRightsFooter
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+#end
+#define($displayRightsTable)
+  #set ($properties = ['username', 'allows', 'userType'])
+  #set ($sourceParameters = {
+      'template': 'getusersandgroups.vm',
+      'uorg': 'usersandgroups',
+      'clsname': 'XWiki.XWikiGlobalRights',
+      'scope': 'local'
+  })
+  
+  $services.liveData.render({
+    'id': 'usersandgroupstable',
+    'source': 'liveTable',
+    'properties': $stringtool.join($properties, ','),
+    'sourceParameters': $escapetool.url($sourceParameters)
+  }, {
+    'meta': {
+      'propertyDescriptors': [
+        {
+          'id': 'username',
+          'editable': false
+        },
+        {
+          'id': 'allows',
+          'sortable': false,
+          'filterable': false,
+          'editable': false
+        },
+        {
+          'id': 'userType',
+          'sortable': false,
+          'editable': false,
+          'filter': {
+            'id': 'list',
+            'options': [
+              {'value': 'user', 'label': $services.localization.render('xe.admin.groups.local')},
+              {'value': 'groups', 'label': $services.localization.render('xe.admin.groups.global')}
+            ]
+          }
+        }
+      ]
+    }
+  })
+#end
+$assignRightsButton
+$assignRightsModal
+$displayRightsTable

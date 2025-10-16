@@ -69,7 +69,6 @@ window.MSCheckbox = Class.create({
       }
       this.right = right;
       this.saveUrl = saveUrl;
-      this.defaultState = defaultState;
       this.state = defaultState;
       this.states = [0,1,2]; // 0 = undefined; 1 = allow, 2 = deny
       this.nrstates = this.states.length;
@@ -253,78 +252,6 @@ window.MSCheckbox = Class.create({
 });
 }).apply(']]#', $jsontool.serialize([$icons]));
 
-/**
-  * user list element creator. Used in adminusers.vm.
-  */
-function displayUsers(row, i, table, form_token)
-{
-  var userurl = row.userurl;
-  var usersaveurl = row.usersaveurl;
-  var userinlineurl = row.userinlineurl;
-  var wikiname = row.wikiname;
-  var docurl = row.docurl;
-
-  var tr = document.createElement('tr');
-
-  var username = document.createElement('td');
-  // Set a data-title attribute for the responsive livetable (since Flamingo).
-  username.setAttribute('data-title', "$escapetool.javascript($services.localization.render('xe.admin.users.username'))");
-  if (wikiname == "local") {
-    var a = document.createElement('a');
-    a.href = userurl;
-    a.appendChild(document.createTextNode(row.username));
-    username.appendChild(a);
-  } else {
-    username.appendChild(document.createTextNode(row.username));
-  }
-  username.className="username";
-  tr.appendChild(username);
-
-  var firstname = document.createElement('td');
-  // Set a data-title attribute for the responsive livetable (since Flamingo).
-  firstname.setAttribute('data-title', "$escapetool.javascript($services.localization.render('xe.admin.users.firstname'))");
-  firstname.appendChild(document.createTextNode(row.firstname) );
-  tr.appendChild(firstname);
-
-  var lastname = document.createElement('td');
-  // Set a data-title attribute for the responsive livetable (since Flamingo).
-  lastname.setAttribute('data-title', "$escapetool.javascript($services.localization.render('xe.admin.users.lastname'))");
-  lastname.appendChild(document.createTextNode(row.lastname) );
-  tr.appendChild(lastname);
-
-  var manage = document.createElement('td');
-  // Set a data-title attribute for the responsive livetable (since Flamingo).
-  manage.setAttribute('data-title', "$escapetool.javascript($services.localization.render('xe.admin.users.manage'))");
-  manage.className = "manage";
-
-  if (wikiname == "local") {
-    //edit user
-    var edit = document.createElement('img');
-    edit.src = '$xwiki.getSkinFile("js/xwiki/usersandgroups/img/edit.png")';
-    edit.title = "$services.localization.render('edit')";
-    Event.observe(edit, 'click', editUserOrGroup(userinlineurl, usersaveurl, docurl));
-    edit.className = 'icon-manage';
-    manage.appendChild(edit);
-
-    //delete group
-    var del = document.createElement('img');
-
-    if (row.grayed == "true") {
-      del.src = '$xwiki.getSkinFile("js/xwiki/usersandgroups/img/clearg.png")';
-      del.className = 'icon-manageg';
-    } else {
-      del.src = '$xwiki.getSkinFile("js/xwiki/usersandgroups/img/clear.png")';
-      Event.observe(del, 'click', deleteUserOrGroup(i, table, row.fullname, "user", form_token));
-      del.className = 'icon-manage';
-    }
-    del.title = "$services.localization.render('delete')";
-    manage.appendChild(del);
-  }
-
-  tr.appendChild(manage);
-  return tr;
-}
-
 /** group list element creator **/
 function displayGroups(row, i, table, form_token)
 {
@@ -432,7 +359,7 @@ function displayMembers(row, i, table, form_token)
 
 /**
   * User and groups list element creator.
-  * Used in adminglobalrights.vm, adminspacerights.vm, editrights.vm.
+  * Used in rightsUI.vm .
   */
 function displayUsersAndGroups(row, i, table, idx, form_token, targetDocument)
 {
@@ -593,7 +520,7 @@ function setBooleanPropertyFromLiveCheckbox(self, saveDocumentURL, configuration
 }
 
 /*
- * Depricated Since 2.3M1
+ * Deprecated Since 2.3M1
  * Use setBooleanPropertyFromLiveCheckbox
  */
 function setGuestExtendedRights(self)
