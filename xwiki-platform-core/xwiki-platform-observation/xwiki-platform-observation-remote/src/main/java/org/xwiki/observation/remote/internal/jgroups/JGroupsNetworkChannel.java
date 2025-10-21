@@ -37,6 +37,8 @@ import org.jgroups.Global;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.ObjectMessage;
+import org.jgroups.Receiver;
+import org.jgroups.View;
 import org.jgroups.blocks.MessageDispatcher;
 import org.jgroups.blocks.RequestHandler;
 import org.jgroups.blocks.RequestOptions;
@@ -70,7 +72,7 @@ import org.xwiki.observation.remote.jgroups.JGroupsReceiver;
 // It's unfortunately not so easy to reduce the class fan out complexity (which is currently just above the accepted
 // threshold)
 @SuppressWarnings("checkstyle:ClassFanOutComplexity")
-public class JGroupsNetworkChannel implements NetworkChannel
+public class JGroupsNetworkChannel implements NetworkChannel, Receiver
 {
     /**
      * Relative path where to find JGroups channels configurations.
@@ -170,6 +172,7 @@ public class JGroupsNetworkChannel implements NetworkChannel
 
         // Register the member handler dispatcher
         this.memberIdDispatcher = new MessageDispatcher(this.jchannel, new JGroupsMemberHandler());
+        this.memberIdDispatcher.setReceiver(this);
 
         // Start the channel
         this.jchannel.connect("event");
@@ -189,9 +192,10 @@ public class JGroupsNetworkChannel implements NetworkChannel
         // Add current instance to the maping
         // Need to be done after starting the channel to know the address
         this.membersIdMap.put(this.jchannel.getAddress().toString(), currentMemberId);
-        this.members = Map.of(currentMemberId, new JGroupsNetworkMember(currentMemberId, this.jchannel.getAddress()));
+        this.members =
+            Map.of(currentMemberId, new JGroupsNetworkMember(this, currentMemberId, this.jchannel.getAddress()));
 
-        // Send the to other members and wait for their ids in response (wait for 1min max).
+        // Send the message to other members and wait for their ids in response (wait for 1min max).
         RspList<String> responses = this.memberIdDispatcher.castMessage(null, new ObjectMessage(null, currentMemberId),
             new RequestOptions(ResponseMode.GET_ALL, 60000));
         for (Map.Entry<Address, Rsp<String>> response : responses.entrySet()) {
@@ -199,7 +203,7 @@ public class JGroupsNetworkChannel implements NetworkChannel
         }
 
         // Initialize the channel
-        // It's actually the second time that #onViewChanged is called, but the first time we did not had enough
+        // It's actually the second time that #updateMembers is called, but the first time we did not had enough
         // information for it to do much
         updateMembers(false);
     }
@@ -296,7 +300,24 @@ public class JGroupsNetworkChannel implements NetworkChannel
         this.memberIdDispatcher.castMessage(null, new ObjectMessage(null, message), RequestOptions.ASYNC());
     }
 
-    private void updateMembers(boolean notifyChanges)
+    @Override
+    public void viewAccepted(View view)
+    {
+        if (this.membersIdMap == null) {
+            // Not ready
+            return;
+        }
+
+        // Check if a member has been removed
+        for (JGroupsNetworkMember member : this.members.values()) {
+            if (!this.jchannel.getView().containsMember(member.getAddress())) {
+                // At least one member left, update the members cache
+                updateMembers(true);
+            }
+        }
+    }
+
+    private synchronized void updateMembers(boolean notifyChanges)
     {
         if (this.membersIdMap == null) {
             // Not ready
@@ -313,7 +334,7 @@ public class JGroupsNetworkChannel implements NetworkChannel
         JGroupsNetworkMember newLeader = null;
         for (Address jmember : jmembers) {
             String remoteId = this.membersIdMap.get(jmember.toString());
-            JGroupsNetworkMember member = new JGroupsNetworkMember(remoteId, jmember);
+            JGroupsNetworkMember member = new JGroupsNetworkMember(this, remoteId, jmember);
 
             newMembers.put(remoteId, member);
 

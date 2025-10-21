@@ -272,12 +272,23 @@ define('xwiki-realtime-toolbar', [
       if (!this._lastReviewedVersion) {
         this._lastReviewedVersion = version.number;
       }
-      const versions = this._toolbar.querySelectorAll('.realtime-version');
-      const limit = parseInt(this._toolbar.querySelector('.realtime-versions').dataset.limit) || 5;
+      // Make sure we don't add the same version twice. This can happen if some of the previous versions were deleted
+      // and their version numbers are being reused.
+      const versions = [...this._toolbar.querySelectorAll('.realtime-version')].filter(existingVersion => {
+        if (JSON.parse(existingVersion.dataset.version).number === version.number) {
+          // The version element is wrapped in a list item element, that we need to remove as well.
+          existingVersion.parentElement.remove();
+          return false;
+        }
+        return true;
+      });
+      // Limit the number of versions shown in the dropdown.
+      const limit = Number.parseInt(this._toolbar.querySelector('.realtime-versions').dataset.limit) || 5;
       if (versions.length >= limit) {
-        // The version element is wrapped in a list item element.
+        // The version element is wrapped in a list item element, that we need to remove as well.
         versions[0].parentElement.remove();
       }
+      // Insert the new version.
       const versionWrapper = this._createVersionElement(version);
       this._toolbar.querySelector('.realtime-versions > .divider').before(versionWrapper);
     }
@@ -336,7 +347,7 @@ define('xwiki-realtime-toolbar', [
     onUserListChange(users) {
       const usersWrapper = this._toolbar.querySelector('.realtime-users');
       usersWrapper.innerHTML = '';
-      const limit = parseInt(usersWrapper.dataset.limit) || 4;
+      const limit = Number.parseInt(usersWrapper.dataset.limit) || 4;
       users.slice(0, limit).forEach(user => {
         usersWrapper.appendChild(this._displayUser(user, true));
       });
@@ -387,7 +398,7 @@ define('xwiki-realtime-toolbar', [
       } else {
         // We assume that the first and the last names are the most important.
         const firstName = names[0];
-        const lastName = names[names.length - 1];
+        const lastName = names.at(-1);
         return firstName[0].toUpperCase() + lastName[0].toUpperCase();
       }
     }
