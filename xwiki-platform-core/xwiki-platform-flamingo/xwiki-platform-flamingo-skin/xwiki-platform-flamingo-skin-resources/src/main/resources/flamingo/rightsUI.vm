@@ -385,17 +385,17 @@ $xwiki.ssfx.use('js/xwiki/table/livetable.css', true)
 <form class="xform">
   <dl>
     <dt>
-      <label for="rightType">
-        $services.localization.render('rightsmanager.assignRights.modal.label')
+      <label for="right-type">
+        $services.localization.render('rightsmanager.assignRights.modal.rightType.label')
         <span class="xRequired">$escapetool.xml($services.localization.render('core.validation.required'))</span>
       </label>
     </dt>
     <dd>
-      <input id="rightType" name="right-type" type="text" size="60" value=""/>
+      <input id="right-type" name="right-type" type="text" size="60" value=""/>
     </dd>
     <dt>
       <label for="username-field-select">
-        $services.localization.render('rightsmanager.assignRights.modal.label')
+        $services.localization.render('rightsmanager.assignRights.modal.userName.label')
         <span class="xRequired">$escapetool.xml($services.localization.render('core.validation.required'))</span>
       </label>
     </dt>
@@ -406,7 +406,11 @@ $xwiki.ssfx.use('js/xwiki/table/livetable.css', true)
       'data-userScope': 'GLOBAL_ONLY'
     })
     #userPicker(false, $pickerParams)
-    #set ($discard = $pickerParams.put('id','username-field-select-group'))
+    #set ($pickerParams = {
+      'id': 'username-field-select-group',
+      'name': 'name',
+      'data-userScope': 'GLOBAL_ONLY'
+    })
     #groupPicker(false, $pickerParams)
     </dd>
   </dl>
@@ -421,11 +425,18 @@ $xwiki.ssfx.use('js/xwiki/table/livetable.css', true)
         </dt>
         <dd>
           #set ($rightSetSelectParameters = {
-            'value': 'allow,deny, ',
+            'value': ['none', 'allow', 'deny'],
             'name': $services.localization.render("rightsmanager.${levelsRights.get($i)}")
           })
-          #suggestInput($rightSetSelectParameters)
-          <input id="rightType" name="right-type" type="text" size="60" value=""/>
+          ## Internal macro, do not use except right here.
+          #macro (_rightSelectTemplate $values)
+            #foreach ($selectedValue in $values)
+              <option value="$!escapetool.xml($selectedValue)" #if($selectedValue=='none')selected="selected"#end>
+                $!escapetool.xml($services.localization.render("rightsmanager.assignRights.modal.rights.$selectedValue"))
+              </option>
+            #end
+          #end
+          #suggestInput($rightSetSelectParameters '_rightSelectTemplate')
         </dd>
       #end
     #end
@@ -471,7 +482,7 @@ $xwiki.ssfx.use('js/xwiki/table/livetable.css', true)
   </div><!-- /.modal -->
 #end
 #define($displayRightsTable)
-  #set ($properties = ['username', 'allows', 'userType'])
+  #set ($properties = ['username', 'userType'])
   #set ($sourceParameters = {
       'template': 'getusersandgroups.vm',
       'uorg': 'usersandgroups',
@@ -492,12 +503,6 @@ $xwiki.ssfx.use('js/xwiki/table/livetable.css', true)
           'editable': false
         },
         {
-          'id': 'allows',
-          'sortable': false,
-          'filterable': false,
-          'editable': false
-        },
-        {
           'id': 'userType',
           'sortable': false,
           'editable': false,
@@ -505,7 +510,7 @@ $xwiki.ssfx.use('js/xwiki/table/livetable.css', true)
             'id': 'list',
             'options': [
               {'value': 'user', 'label': $services.localization.render('xe.admin.groups.local')},
-              {'value': 'groups', 'label': $services.localization.render('xe.admin.groups.global')}
+              {'value': 'group', 'label': $services.localization.render('xe.admin.groups.global')}
             ]
           }
         }
