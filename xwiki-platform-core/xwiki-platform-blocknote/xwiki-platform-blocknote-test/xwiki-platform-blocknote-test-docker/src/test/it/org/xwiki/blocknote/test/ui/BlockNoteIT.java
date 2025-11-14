@@ -74,7 +74,13 @@ class BlockNoteIT
         actions.keyDown(CONTROL).sendKeys(END).keyUp(CONTROL)
             .sendKeys(addedContent)
             .perform();
+        boolean wcagEnabled = setup.getWCAGUtils().getWCAGContext().isWCAGEnabled();
+        // We always disable WCAG validation here.
+        // The codemirror section with noteblock has incorrect markup. This is pretty much independent of XWiki.
+        setup.getWCAGUtils().getWCAGContext().setWCAGEnabled(false);
         ViewPage postSavePage = new WYSIWYGEditPage().clickSaveAndView();
+        // We set back the WCAG validation in the state it was in before this BasePage initialization.
+        setup.getWCAGUtils().getWCAGContext().setWCAGEnabled(wcagEnabled);
         assertEquals("""
             %s
             %s""".formatted(textContent, addedContent), postSavePage.getContent());
