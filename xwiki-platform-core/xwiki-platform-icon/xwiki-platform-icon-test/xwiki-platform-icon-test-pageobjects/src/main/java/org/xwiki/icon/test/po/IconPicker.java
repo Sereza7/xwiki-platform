@@ -48,6 +48,9 @@ public class IconPicker extends BaseElement
         if (!this.isOpen()) 
         {
             input.click();
+            // We wait for the spinner meaning that the picker is loading to disappear.
+            // The spinner is the only image that is not wrapped in anything else in the container.
+            getDriver().waitUntilElementDisappears(By.cssSelector(".xwikiIconPickerList > img"));
         }
     }
     public boolean isOpen() 

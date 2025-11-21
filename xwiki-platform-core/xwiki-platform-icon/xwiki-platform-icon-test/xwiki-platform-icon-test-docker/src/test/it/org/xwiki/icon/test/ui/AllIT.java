@@ -37,7 +37,6 @@ class AllIT
     }
 
     @Nested
-    @DisplayName("Icon Picker tests")
     class NestedIconPickerIT extends IconPickerIT
     {
     }
