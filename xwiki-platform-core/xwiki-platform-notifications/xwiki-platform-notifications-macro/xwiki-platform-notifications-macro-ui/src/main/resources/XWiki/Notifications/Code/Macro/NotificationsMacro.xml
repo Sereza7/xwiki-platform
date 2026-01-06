@@ -2080,7 +2080,7 @@ $notifs
       <name>users</name>
     </property>
     <property>
-      <type/>
+      <type>org.xwiki.user.UsersReference<type/>
     </property>
   </object>
   <object>
