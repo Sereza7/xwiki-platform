@@ -22,7 +22,7 @@ package org.xwiki.user;
 import java.io.Serializable;
 
 /**
- * Abstracts the concept of a list ofUser references. 
+ * Abstracts the concept of a list of User references. 
  * 
  * @version $Id$
  * @since 18.0.0
