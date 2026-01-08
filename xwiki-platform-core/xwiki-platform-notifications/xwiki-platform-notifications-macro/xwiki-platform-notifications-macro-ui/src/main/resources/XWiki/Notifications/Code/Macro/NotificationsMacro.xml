@@ -2002,7 +2002,7 @@ $notifs
       <name>pages</name>
     </property>
     <property>
-      <type/>
+      <type>java.util.List&lt;org.xwiki.model.reference.DocumentReference&gt;</type>
     </property>
   </object>
   <object>
@@ -2080,7 +2080,7 @@ $notifs
       <name>users</name>
     </property>
     <property>
-      <type>org.xwiki.user.UsersReference<type/>
+      <type>java.util.List&lt;org.xwiki.user.UserReference&gt;<type/>
     </property>
   </object>
   <object>
