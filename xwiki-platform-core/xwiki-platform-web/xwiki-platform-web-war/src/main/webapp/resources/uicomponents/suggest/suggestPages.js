@@ -20,9 +20,10 @@
 /*!
 #set ($pageIcon = $services.icon.getMetaData('page_white'))
 #set ($webHome = $services.model.getEntityReference('DOCUMENT', 'default').name)
+#set ($contextPath = $request.contextPath)
 #[[*/
 // Start JavaScript-only code.
-(function(pageIcon, webHome) {
+(function(pageIcon, webHome, contextPath) {
   "use strict";
 
 define('xwiki-suggestPages', ['jquery', 'xwiki-selectize'], function($) {
@@ -37,6 +38,7 @@ define('xwiki-suggestPages', ['jquery', 'xwiki-selectize'], function($) {
       // * "wiki:wikiName" look for pages in the specified wiki
       // * "space:spaceReference" look for pages in the specified space
       searchScope: select.data('searchScope'),
+      onlySpaces: select.attr('onlyspaces'),
       // We overwrite the list of search fields because we don't want to match the technical "WebHome" nested page name
       // that appears in the value.
       searchField: ['searchValue', 'label', 'hint'],
@@ -75,6 +77,12 @@ define('xwiki-suggestPages', ['jquery', 'xwiki-selectize'], function($) {
   };
 
   var loadPages = function(text, options) {
+    if (options.onlySpaces) {
+       let defaultURL = `${contextPath}/rest/wikis/${wiki}/query`;
+      $.getJSON(defaultURL, $.param({
+       q: ``
+      });
+    }
     return $.getJSON(getRestSearchURL(options.searchScope), $.param({
       q: text,
       scope: ['name', 'title'],
@@ -85,7 +93,16 @@ define('xwiki-suggestPages', ['jquery', 'xwiki-selectize'], function($) {
   };
 
   var loadPage = function(value, options) {
-    var documentReference = XWiki.Model.resolve(value, XWiki.EntityType.DOCUMENT, options.documentReference);
+    if (options.onlySpaces) {
+      let spaceReference = XWiki.Model.resolve(value, XWiki.EntityType.SPACE, options.documentReference);
+      let wiki = options.searchScope.extractReferenceValue(XWiki.EntityType.WIKI);
+      let spaceURL = `${contextPath}/rest/wikis/${wiki}/spaces/${spaceReference}`;
+      return $.getJSON(spaceURL).then(processPage.bind(null, options)).then(function(space) {
+        // An array is expected in xwiki.selectize.js
+        return [space];
+      });
+    }
+    let documentReference = XWiki.Model.resolve(value, XWiki.EntityType.DOCUMENT, options.documentReference);
     var documentRestURL = new XWiki.Document(documentReference).getRestURL();
     return $.getJSON(documentRestURL, $.param({
       prettyNames: true
@@ -111,6 +128,8 @@ define('xwiki-suggestPages', ['jquery', 'xwiki-selectize'], function($) {
   var processPages = function(options, response) {
     if (Array.isArray(response.searchResults)) {
       return response.searchResults.map(processPage.bind(null, options));
+    } else if (options.onlySpaces && Array.isArray(response.spaces)) {
+      return response.spaces.map(processPage.bind(null, options));
     } else {
       return [];
     }
@@ -119,23 +138,31 @@ define('xwiki-suggestPages', ['jquery', 'xwiki-selectize'], function($) {
   var processPage = function(options, page) {
     // Value (relative to the current wiki, where it is saved)
     var documentReference = XWiki.Model.resolve(page.id, XWiki.EntityType.DOCUMENT);
+    if (options.onlySpaces) documentReference = XWiki.Model.resolve(page.id, XWiki.EntityType.SPACE);
     var relativeReference = documentReference.relativeTo(options.documentReference.getRoot());
     var value = XWiki.Model.serialize(relativeReference);
     var searchValue = value;
-    // Label
-    var hierarchy = page.hierarchy.items;
-    var label = hierarchy.pop().label;
-    if (documentReference.name === webHome) {
-      label = hierarchy.pop().label;
-      // See XWIKI-16935: Page Picker shouldn't show results matching the technical "WebHome".
-      searchValue = XWiki.Model.serialize(relativeReference.parent);
+    let label;
+    let hint;
+    if (options.onlySpaces) {
+      label = page.name;
+      hint = page.home.split(':')[1].replace('.','/');
+    } else {
+      let hierarchy = page.hierarchy.items;
+      // Label
+      let label = hierarchy.pop().label;
+      if (documentReference.name === webHome) {
+        label = hierarchy.pop().label;
+        // See XWIKI-16935: Page Picker shouldn't show results matching the technical "WebHome".
+        searchValue = XWiki.Model.serialize(relativeReference.parent);
+      }
+      // Hint
+      hint = hierarchy.filter(function(item) {
+        return item.type === 'space';
+      }).map(function(item) {
+        return item.label;
+      }).join(' / ');
     }
-    // Hint
-    var hint = hierarchy.filter(function(item) {
-      return item.type === 'space';
-    }).map(function(item) {
-      return item.label;
-    }).join(' / ');
     return {
       value: value,
       searchValue: searchValue,
@@ -165,4 +192,4 @@ require(['jquery', 'xwiki-suggestPages', 'xwiki-events-bridge'], function($) {
 });
 
 // End JavaScript-only code.
-}).apply(']]#', $jsontool.serialize([$pageIcon, $webHome]));
+}).apply(']]#', $jsontool.serialize([$pageIcon, $webHome, $contextPath]));

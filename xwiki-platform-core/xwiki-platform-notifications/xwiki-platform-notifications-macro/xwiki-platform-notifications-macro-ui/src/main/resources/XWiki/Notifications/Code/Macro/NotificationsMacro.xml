@@ -1924,7 +1924,7 @@ $notifs
       <name>spaces</name>
     </property>
     <property>
-      <type/>
+      <type>java.util.List&lt;org.xwiki.model.reference.SpaceReference&gt;</type>
     </property>
   </object>
   <object>
