@@ -154,7 +154,7 @@ var XWiki = (function (XWiki) {
           eventCallbackScope: this,
           noHighlight: true,
           value: valueNode,
-          containerTagName: 'button'
+          containerTagName: 'a'
         } ),
       ],
       {
@@ -166,6 +166,10 @@ var XWiki = (function (XWiki) {
         }
       });
       var allResults = allResultsNode.getElement();
+      let form = allResults.up('form')
+      let formData = new FormData(form);
+      let formParams = new URLSearchParams(formData);
+      allResults.down('a').setAttribute('href', formParams.toString());
       allResultsNode.items[0].getElement().addEventListener('focusin',
         (event) => this.suggest.setHighlight($(event.currentTarget)));
       this.suggest = new XWiki.widgets.Suggest( this.searchInput, {
