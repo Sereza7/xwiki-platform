@@ -2314,7 +2314,7 @@ $notifs
       <name>tags</name>
     </property>
     <property>
-      <type/>
+      <type>java.util.List&lt;org.xwiki.rest.resources.tags.TagsResource&gt;</type>
     </property>
   </object>
 </xwikidoc>
