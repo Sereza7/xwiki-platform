@@ -22,15 +22,9 @@
 #set ($parameters.value = $displayer.value)
 #set ($parameters.onlySpaces = 'onlySpaces')
 #set ($parameters.multiple = 'multiple')
-#template('documentTree_macros.vm')
-#set ($discard = $xwiki.get('jsfx').use('uicomponents/widgets/locationPicker.js', true))
-#documentTree({
-    'class': 'location-tree',
-    'finder': true,
-    'showAttachments': false,
-    'showRoot': true,
-    'showTerminalDocuments': false,
-    'showTranslations': false,
-    'showWikis': true,
-    'filterHiddenDocuments': true
+#template('locationPicker_macros.vm')
+#multiLocationPicker({
+    'parent': {
+        'label': 'appWithinMinutes.createApp.parent.label'
+    }
 })

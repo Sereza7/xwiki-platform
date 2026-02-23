@@ -84,6 +84,27 @@
   </dl>
 #end
 
+#macro (multiLocationPicker $options)
+  #set ($discard = $xwiki.get('jsfx').use('uicomponents/widgets/validation/livevalidation_prototype.js'))
+  #set ($discard = $xwiki.get('ssfx').use('uicomponents/widgets/validation/livevalidation.css', true))
+  #set ($discard = $xwiki.get('jsfx').use('uicomponents/widgets/locationPicker.js', true))
+  #set ($discard = $xwiki.get('ssfx').use('uicomponents/widgets/locationPicker.css', true))
+  ## The breadcrumb is updated whenever the user changes the parent page. This causes the breadcrumb element to be
+  ## constantly replaced, preventing us from displaying the live validation message after it. In order to overcome
+  ## this, we wrap the breadcrumb element in a DIV that remains the same.
+  <div class="breadcrumb-container">
+    ## Note: We display only the parent reference here. The new document part will be added from JavaScript.
+    #hierarchy($options.parent.reference $options)
+    #locationPickerActions($options)
+  </div>
+  ##
+  ## ---------------------------------------------------------------------------------------------------------
+  ## Location advanced edit
+  ## ---------------------------------------------------------------------------------------------------------
+  ##
+  #locationAdvancedEdit($options)
+#end
+
 #macro (locationPickerActions $options)
   <div class="location-actions">
     ## Tree picker toggle
