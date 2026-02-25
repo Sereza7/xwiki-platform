@@ -52,7 +52,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-top: var(--padding-large-vertical);
-  margin-bottom: var(--padding-large-vertical);
+  /* We keep the margin-bottom at 0 to make sure the topbar still looks like it's part of the livedata. */
 }
 
 .livedata-topbar-left,

@@ -351,7 +351,6 @@ export default {
   border: 0;
   text-align: left;
   padding: var(--table-cell-padding);
-  padding-top: 0;
 }
 
 .layout-table .draggable-item .property-name {

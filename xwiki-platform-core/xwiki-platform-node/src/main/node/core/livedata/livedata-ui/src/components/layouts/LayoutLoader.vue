@@ -102,12 +102,13 @@ export default {
 }
 
 .layout-loader {
-  position: relative;
+  /* Make sure the loader doesn't get any space allocated even when shown. 
+    Instead, we add it over the margin of the topbar and padding of the column headers. */
+  position: absolute;
+  display: none;
   width: 100%;
   height: 0.4rem;
   visibility: hidden;
-  /* Make sure the loader doesn't get any space allocated when not shown. */
-  display: none;
 }
 
 .layout-loader .loader-fill {
