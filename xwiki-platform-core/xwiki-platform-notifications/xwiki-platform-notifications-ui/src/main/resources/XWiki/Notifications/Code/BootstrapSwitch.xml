@@ -157,6 +157,19 @@ define('xwiki-bootstrap-switch', ['jquery', 'bootstrap', 'bootstrap-switch'], fu
       return container.html();
     }
   };
+  
+  var fixSemantics = function(input, initialState) {
+    // Add semantics on the buttons at initialization
+    input.parent().find('.bootstrap-switch-handle-on, .bootstrap-switch-handle-off').attr('tabindex', 0);
+    input.parent().find('.bootstrap-switch-handle-on').attr('aria-hidden', !initialState);
+    input.parent().find('.bootstrap-switch-handle-off').attr('aria-hidden', initialState);
+    // Custom behaviour when the switch is triggered. We need some dynamic aria to make it accessible.
+    input.on('switchChange.bootstrapSwitch', (...args) =&gt; {
+      let change = args[1]||false;
+      input.parent().find('.bootstrap-switch-handle-on').attr('aria-hidden', !change);
+      input.parent().find('.bootstrap-switch-handle-off').attr('aria-hidden', change);
+    });
+  };
 
   // Keep a reference to the original Bootstrap Switch function in case someone needs the default behavior.
   $.fn.bootstrapSwitchOrig = $.fn.bootstrapSwitch;
@@ -168,6 +181,7 @@ define('xwiki-bootstrap-switch', ['jquery', 'bootstrap', 'bootstrap-switch'], fu
       // The caller wants to set multiple options, including the label.
       option.labelText = fixLabel(option.labelText);
     }
+    fixSemantics(this, option.state);
     return this.bootstrapSwitchOrig.apply(this, arguments);
   };
 
