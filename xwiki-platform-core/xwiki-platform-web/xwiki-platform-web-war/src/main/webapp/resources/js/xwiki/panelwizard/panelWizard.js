@@ -64,21 +64,17 @@ function getY(el) {
 }
 
 function getBlocList(el) {
-  const list = [];
-  const nb = el.childNodes.length;
-  for (let i = 0; i < nb; ++i) {
-    const el2 = el.childNodes[i];
-    if (isPanel(el2)) {
-      if (!el2.isDragging) {
-        list.push(el2);
-      }
+  let list = [];
+  for (let el2 of el.childNodes) {
+    if (isPanel(el2) && !el2.isDragging) {
+      list.push(el2);
     }
   }
   return list;
 }
 
 function getDragBoxPos(list, y) {
-  const nb = list.length;
+  let nb = list.length;
   if (nb === 0) {
     return 0;
   }
@@ -90,7 +86,7 @@ function getDragBoxPos(list, y) {
 }
 
 function getAllPanels(el){
-  const list = [];
+  let list = [];
   const divs = el.getElementsByTagName("div");
   for (let div of divs) {
     if (isPanel(div)) {
@@ -121,16 +117,15 @@ function onDragStart(el, x, y) {
   }
   const realParent = el.parentNode;
   window.parentNode = el.parentNode;
-  let isAdded = (realParent !== leftPanels && realParent !== rightPanels);
-  let coords = Position.cumulativeOffset(el);
-  let coords2 = Position.realOffset(el);
+  const isAdded = (realParent !== leftPanels && realParent !== rightPanels);
+  const coords = Position.cumulativeOffset(el);
+  const coords2 = Position.realOffset(el);
   let newX = coords[0];
   let newY = coords[1] - coords2[1] + (document.documentElement.scrollTop - 0 + document.body.scrollTop - 0);
-  if (window.ActiveXObject) {
-    dragel.style.height = (el.offsetHeight ? (el.offsetHeight) : el.displayHeight) + "px";
-  } else {
-    dragel.style.height = (el.offsetHeight ? (el.offsetHeight - 2) : el.displayHeight) + "px";
-  }
+  let height = el.offsetHeight ? (el.offsetHeight) : el.displayHeight;
+  if (!window.ActiveXObject && el.offsetHeight) height -= 2;
+  height = height + "px";
+  dragel.style.height = height;
   dragel.style.display = "block";
   // Make the current absolute
   el.style.left = newX + "px";
@@ -141,11 +136,7 @@ function onDragStart(el, x, y) {
     window.parentNode = allPanels;
     el.placeholder = document.createElement("div");
     el.placeholder.className="placeholder";
-    if (window.ActiveXObject) {
-      el.placeholder.style.height = (el.offsetHeight ? (el.offsetHeight) : el.displayHeight) + "px";
-    } else {
-      el.placeholder.style.height = (el.offsetHeight ? (el.offsetHeight-2) : el.displayHeight) + "px";
-    }
+    el.placeholder.style.height = height;
     realParent.replaceChild(el.placeholder, el);
     el.placeholder.style.display = "block";
     addClass(allPanels, "dropTarget");
@@ -159,10 +150,9 @@ function onDragStart(el, x, y) {
   window.prevcolumn = parentNode;
 }
 
+function 
 function onDrag(el, x, y) {
-  if (enabletip) {
-    hideTip();
-  }
+  if (enabletip) hideTip();
   window.parentNode = getClosestDropTarget(x,y, el.offsetWidth, el.offsetHeight);
   if (parentNode !== prevcolumn) {
     if (prevcolumn !== allPanels) {
@@ -176,11 +166,9 @@ function onDrag(el, x, y) {
     }
   }
   window.prevcolumn = parentNode;
-  let list = getBlocList(parentNode);
-  let pos = getDragBoxPos(list, y);
-  if (pos === -1) {
-    return;
-  }
+  const list = getBlocList(parentNode);
+  const pos = getDragBoxPos(list, y);
+  if (pos === -1) return;
   if (list.length === 0) {
     if (parentNode !== allPanels) {
       parentNode.appendChild(dragel);
@@ -191,7 +179,7 @@ function onDrag(el, x, y) {
     if (list[pos+2]) {
       parentNode.insertBefore(dragel, list[pos+2]);
     } else if (parentNode !== allPanels) {
-      parentNode.appendChild( dragel);
+      parentNode.appendChild(dragel);
     } else {
       dragel.parentNode.removeChild(dragel);
     }
@@ -239,11 +227,14 @@ function executeCommand(url, callback) {
         if (ajaxCallback) {
           ajaxCallback(ajaxRequest.responseText);
         } else {
-          new XWiki.widgets.Notification('no callback defined', 'error');
+          let notification = new XWiki.widgets.Notification('no callback defined', 'error', {inactive: true});
+          notification.show();
         }
       } else {
-        new XWiki.widgets.Notification("There was a problem retrieving the xml data:\n" + ajaxRequest.status + ":\t"
-            + ajaxRequest.statusText + "\n" + ajaxRequest.responseText, 'error');
+        let notification = new XWiki.widgets.Notification("There was a problem retrieving the xml data:\n" 
+          + ajaxRequest.status + ":\t" + ajaxRequest.statusText + "\n" + ajaxRequest.responseText, 'error', 
+          {inactive: true});
+        notification.show();
       }
     }
   }
@@ -262,7 +253,9 @@ function executeCommand(url, callback) {
     ajaxRequest.open("GET", url, true);
     ajaxRequest.send();
   } else{
-    new XWiki.widgets.Notification("your browser does not support xmlhttprequest", 'error');
+    let notification = new XWiki.widgets.Notification("your browser does not support xmlhttprequest", 'error', 
+      {inactive: true});
+    notification.show();
   }
 }
 
@@ -270,53 +263,35 @@ function start1() {
   let i, pos, el;
   //attaching events to all panels
   const divs = document.getElementsByTagName("div");
-  for (i = 0; i < divs.length; ++i) {
-    el = divs[i];
-    if (isPanel(el)) {
-      attachDragHandler(el);
-    }
+  for (let el of divs) {
+    if (isPanel(el)) attachDragHandler(el);
   }
   //replacing used panels in the list with placeholders and attaching placeholders
   window.panelsInList = getAllPanels(allPanels);
   window.panelsOnLeft = getBlocList(leftPanels);
   window.panelsOnRight = getBlocList(rightPanels);
-  //
+  let movePanel = function (el, i) {
+    if (!el) return;
+    el.fullname = window.allPanelsPlace[i].fullname;
+    el.placeholder = document.createElement("div");
+    el.placeholder.className = "placeholder";
+    let height = el.offsetHeight ? (el.offsetHeight) : 0;
+    if (!window.ActiveXObject && el.offsetHeight) height -= 2;
+    el.displayHeight = height;
+    el.placeholder.style.height = (el.displayHeight) +"px";
+    el.placeholder.style.display = "block";
+    panelsInList[i].parentNode?.replaceChild(el.placeholder, panelsInList[i]);
+  }
   for (i = 0; i < panelsInList.length; ++i){
     pos = window.allPanelsPlace[i]['left'];
     if (pos !== -1) {
       el = panelsOnLeft[pos];
-      if (el) {
-        el.fullname = window.allPanelsPlace[i].fullname;
-        el.placeholder = document.createElement("div");
-        el.placeholder.className = "placeholder";
-        if (window.ActiveXObject) {
-          el.displayHeight = (el.offsetHeight ? (el.offsetHeight) : 0);
-        } else {
-          el.displayHeight = (el.offsetHeight ? (el.offsetHeight-2) : 0);
-        }
-        el.placeholder.style.height = (el.displayHeight) +"px";
-        el.placeholder.style.display = "block";
-        panelsInList[i].parentNode.replaceChild(el.placeholder, panelsInList[i]);
-      }
+      movePanel(el, i);
     }
     pos = window.allPanelsPlace[i]['right'];
     if (pos !== -1) {
       el = panelsOnRight[pos];
-      if (el) {
-        el.fullname = window.allPanelsPlace[i].fullname;
-        el.placeholder = document.createElement("div");
-        el.placeholder.className = "placeholder";
-        if (window.ActiveXObject) {
-          el.displayHeight = (el.offsetHeight ? (el.offsetHeight) : 0);
-        } else {
-          el.displayHeight = (el.offsetHeight ? (el.offsetHeight-2) : 0);
-        }
-        el.placeholder.style.height = (el.displayHeight) +"px";
-        el.placeholder.style.display = "block";
-        if (panelsInList[i].parentNode) {
-          panelsInList[i].parentNode.replaceChild(el.placeholder, panelsInList[i]);
-        }
-      }
+      movePanel(el, i);
     }
     panelsInList[i].fullname=window.allPanelsPlace[i].fullname;
   }
@@ -354,16 +329,12 @@ function isAttachedPanel(element) {
 
 function getBlocNameList(el) {
   let list = "";
-  let nb = el.childNodes.length;
-  for (let i = 0; i < nb; ++i) {
-    let el2 = el.childNodes[i];
-    if (isPanel(el2)) {
-      if (!el2.isDragging) {
-        if (list !== "") {
-          list += ",";
-        }
-        list += el2.fullname;
+  for (let el2 of el.childNodes) {
+    if (isPanel(el2) && !el2.isDragging) {
+      if (list !== "") {
+        list += ",";
       }
+      list += el2.fullname;
     }
   }
   return list;
@@ -374,12 +345,12 @@ function save() {
   url += "&showLeftPanels=" + window.showLeftColumn;
   url += "&showRightPanels=" + window.showRightColumn;
   if (window.showLeftColumn) {
-    let leftPanelsList = leftPanelsInput ? leftPanelsInput.value : getBlocNameList(leftPanels);
+    const leftPanelsList = leftPanelsInput ? leftPanelsInput.value : getBlocNameList(leftPanels);
     url += "&leftPanels=" + encodeURIComponent(leftPanelsList);
     url += "&leftPanelsWidth=" + leftPanelsWidthInput.value;
   }
   if (window.showRightColumn) {
-    let rightPanelsList = rightPanelsInput ? rightPanelsInput.value : getBlocNameList(rightPanels);
+    const rightPanelsList = rightPanelsInput ? rightPanelsInput.value : getBlocNameList(rightPanels);
     url += "&rightPanels=" + encodeURIComponent(rightPanelsList);
     url += "&rightPanelsWidth=" + rightPanelsWidthInput.value;
   }
@@ -388,7 +359,8 @@ function save() {
 
 function saveResult(html) {
   if (html === "SUCCESS") {
-    new XWiki.widgets.Notification(window.panelsavesuccess, 'done');
+    let notification = new XWiki.widgets.Notification(window.panelsavesuccess, 'done', {inactive: true});
+    notification.show();
     // this is for the "revert" button:
     leftPanels.savedPanelList = getBlocList(leftPanels);
     rightPanels.savedPanelList = getBlocList(rightPanels);
@@ -416,9 +388,7 @@ function releasePanel(el) {
 
 function restorePanels(column) {
   for (let panel of column.panels) {
-    if (!panel.placeholder) {
-      restorePanel(panel, column);
-    }
+    if (!panel.placeholder) restorePanel(panel, column);
   }
   column.panels = undefined;
 }
@@ -582,7 +552,6 @@ const leftPanelsInput  = $("XWiki.XWikiPreferences_0_leftPanels");
 const leftPanelsWidthInput  = $("XWiki.XWikiPreferences_0_leftPanelsWidth");
 const rightPanelsInput = $("XWiki.XWikiPreferences_0_rightPanels");
 const rightPanelsWidthInput = $("XWiki.XWikiPreferences_0_rightPanelsWidth");
-const selectedLayout = $('selectedoption');
 function panelEditorInit() {
   window.leftPanels = $("leftPanels");
   window.rightPanels = $("rightPanels");
@@ -610,7 +579,7 @@ function panelEditorInit() {
   start1();
 
   // Update the enabled/disable state of the left/right panel inputs.
-  
+  let selectedLayout = $('selectedoption');
   changePreviewLayout(selectedLayout, selectedLayout.previousSiblings().length);
 }
 
