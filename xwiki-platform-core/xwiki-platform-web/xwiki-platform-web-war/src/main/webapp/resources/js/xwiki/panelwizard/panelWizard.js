@@ -150,7 +150,6 @@ function onDragStart(el, x, y) {
   window.prevcolumn = parentNode;
 }
 
-function 
 function onDrag(el, x, y) {
   if (enabletip) hideTip();
   window.parentNode = getClosestDropTarget(x,y, el.offsetWidth, el.offsetHeight);
