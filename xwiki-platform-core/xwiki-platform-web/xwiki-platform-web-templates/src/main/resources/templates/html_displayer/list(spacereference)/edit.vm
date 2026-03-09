@@ -23,6 +23,10 @@
 #set ($parameters.onlySpaces = 'onlySpaces')
 #set ($parameters.multiple = 'multiple')
 #template('locationPicker_macros.vm')
+<input type="text" value="$!escapetool.xml($displayer.value)"
+#foreach ($parameter in $displayer.parameters.entrySet())
+    $escapetool.xml($parameter.key)="$!escapetool.xml($parameter.value)"
+#end/>
 #multiLocationPicker({
     'parent': {
         'label': 'appWithinMinutes.createApp.parent.label'

@@ -92,17 +92,33 @@
   ## The breadcrumb is updated whenever the user changes the parent page. This causes the breadcrumb element to be
   ## constantly replaced, preventing us from displaying the live validation message after it. In order to overcome
   ## this, we wrap the breadcrumb element in a DIV that remains the same.
+  #_multiLocationPicker_input()
   <div class="breadcrumb-container">
     ## Note: We display only the parent reference here. The new document part will be added from JavaScript.
     #hierarchy($options.parent.reference $options)
-    #locationPickerActions($options)
+    #set($options.multi = 'true')
+    #_multiLocationPickerActions($options)
   </div>
-  ##
-  ## ---------------------------------------------------------------------------------------------------------
-  ## Location advanced edit
-  ## ---------------------------------------------------------------------------------------------------------
-  ##
-  #locationAdvancedEdit($options)
+#end
+
+#macro (_multiLocationPicker_input $parameters)
+  #set ($discard = $parameters.put('multiple', 'multiple'))
+  #set ($discard = $parameters.putIfAbsent('title',
+    $services.localization.render('core.widgets.suggest.userPicker.multi.title')))
+  #set ($discard = $parameters.putIfAbsent('data-userScope', "$!services.wiki.user.userScope"))
+  #suggestInput($parameters)
+#end
+#macro (_multiLocationPickerActions $options)
+  #if ($isDocumentTreeAvailable && $options.parent.label && !$options.parent.readOnly)
+    #documentPickerModal($options)
+    <a href="#" class="location-action location-action-pick"
+       title="$escapetool.xml($services.localization.render('core.create.locationPreview.actions.pick'))">
+      $services.icon.renderHTML('add')
+      <span class='sr-only'>
+        $escapetool.xml($services.localization.render('core.create.locationPreview.actions.pick'))
+      </span>
+    </a>
+  #end
 #end
 
 #macro (locationPickerActions $options)
